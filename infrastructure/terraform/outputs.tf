@@ -144,3 +144,27 @@ output "lambda_dlq" {
     name = aws_sqs_queue.lambda_dlq.name
   }
 }
+
+# API Gateway Outputs
+output "api_gateway" {
+  description = "API Gateway details"
+  value = {
+    id           = module.api_gateway.api_id
+    arn          = module.api_gateway.api_arn
+    name         = module.api_gateway.api_name
+    endpoint     = module.api_gateway.api_endpoint
+    stage        = module.api_gateway.api_stage_name
+    endpoints    = module.api_gateway.endpoints
+  }
+}
+
+output "api_key" {
+  description = "API Gateway API key ID (use 'terraform output -raw api_key_value' to get the actual key)"
+  value       = module.api_gateway.api_key_id
+}
+
+output "api_key_value" {
+  description = "API Gateway API key value"
+  value       = module.api_gateway.api_key_value
+  sensitive   = true
+}

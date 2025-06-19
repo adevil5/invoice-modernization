@@ -33,6 +33,11 @@ output "function_alias_invoke_arn" {
   value       = aws_lambda_alias.live.invoke_arn
 }
 
+output "alias_name" {
+  description = "Name of the live alias"
+  value       = aws_lambda_alias.live.name
+}
+
 output "role_arn" {
   description = "ARN of the Lambda execution role"
   value       = aws_iam_role.lambda_execution.arn

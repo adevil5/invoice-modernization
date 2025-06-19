@@ -543,3 +543,84 @@ module "dlq_handler_lambda" {
   
   common_tags = local.common_tags
 }
+
+# API Gateway
+module "api_gateway" {
+  source = "./modules/api-gateway"
+  
+  project_name = local.project
+  environment  = local.environment
+  stage_name   = var.api_stage_name
+  
+  # Lambda function integrations
+  create_invoice_lambda_invoke_arn    = module.create_invoice_lambda.function_alias_invoke_arn
+  create_invoice_lambda_function_name = module.create_invoice_lambda.function_name
+  
+  get_invoice_lambda_invoke_arn    = module.get_invoice_lambda.function_alias_invoke_arn
+  get_invoice_lambda_function_name = module.get_invoice_lambda.function_name
+  
+  list_invoices_lambda_invoke_arn    = module.list_invoices_lambda.function_alias_invoke_arn
+  list_invoices_lambda_function_name = module.list_invoices_lambda.function_name
+  
+  # CloudWatch logging
+  cloudwatch_log_group_arn = aws_cloudwatch_log_group.api_gateway_logs.arn
+  log_retention_days       = var.log_retention_days
+  api_logging_level        = var.log_level == "DEBUG" ? "INFO" : "ERROR"
+  create_cloudwatch_role   = local.environment == "dev" ? true : false
+  
+  # Throttling
+  api_throttle_rate_limit  = var.api_throttle_rate_limit
+  api_throttle_burst_limit = var.api_throttle_burst_limit
+  
+  # Quota
+  api_quota_limit  = local.environment == "prod" ? 100000 : 10000
+  api_quota_period = "DAY"
+  
+  # CORS
+  allowed_cors_origins = var.allowed_cors_origins
+  
+  # Caching
+  enable_api_caching = var.enable_api_caching
+  api_cache_size     = "0.5"
+  
+  # X-Ray tracing
+  enable_xray_tracing = var.enable_xray_tracing
+  
+  common_tags = local.common_tags
+}
+
+# CloudWatch log group for API Gateway
+resource "aws_cloudwatch_log_group" "api_gateway_logs" {
+  name              = "/aws/apigateway/${local.project}-${local.environment}"
+  retention_in_days = var.log_retention_days
+  
+  tags = local.common_tags
+}
+
+# Lambda permissions for API Gateway
+resource "aws_lambda_permission" "api_gateway_create_invoice" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = module.create_invoice_lambda.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${module.api_gateway.api_arn}/*/*"
+  qualifier     = module.create_invoice_lambda.alias_name
+}
+
+resource "aws_lambda_permission" "api_gateway_get_invoice" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = module.get_invoice_lambda.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${module.api_gateway.api_arn}/*/*"
+  qualifier     = module.get_invoice_lambda.alias_name
+}
+
+resource "aws_lambda_permission" "api_gateway_list_invoices" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = module.list_invoices_lambda.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${module.api_gateway.api_arn}/*/*"
+  qualifier     = module.list_invoices_lambda.alias_name
+}

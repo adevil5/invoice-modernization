@@ -179,11 +179,11 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
   - [x] Setup IAM roles with least privilege
   - [x] Configure VPC settings if needed
 
-- [ ] **2.1.4** Define API Gateway infrastructure
-  - [ ] Write Terraform module: `modules/api-gateway/main.tf`
-  - [ ] Configure REST API with resources
-  - [ ] Setup request/response models
-  - [ ] Enable CORS and API key authentication
+- [x] **2.1.4** Define API Gateway infrastructure
+  - [x] Write Terraform module: `modules/api-gateway/main.tf`
+  - [x] Configure REST API with resources
+  - [x] Setup request/response models
+  - [x] Enable CORS and API key authentication
 
 ### 2.2 Repository Implementations (0.5 days)
 

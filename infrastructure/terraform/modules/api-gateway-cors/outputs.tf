@@ -1,0 +1,1 @@
+# No outputs needed for CORS module as it only creates methods/integrations
