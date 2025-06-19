@@ -89,11 +89,11 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
   - [x] Add job for building artifacts
   - [x] Configure job dependencies and matrix strategy
 
-- [ ] **0.3.3** Setup semantic versioning and releases
-  - [ ] Install semantic-release: `npm i -D semantic-release @semantic-release/git @semantic-release/changelog`
-  - [ ] Configure `.releaserc.json` with conventional commits
-  - [ ] Setup NPM_TOKEN and GITHUB_TOKEN secrets
-  - [ ] Add release job to GitHub Actions
+- [x] **0.3.3** Setup semantic versioning and releases
+  - [x] Install semantic-release: `npm i -D semantic-release @semantic-release/git @semantic-release/changelog`
+  - [x] Configure `.releaserc.json` with conventional commits
+  - [x] Setup NPM_TOKEN and GITHUB_TOKEN secrets
+  - [x] Add release job to GitHub Actions
 
 ## Phase 1: Domain Modeling and Core Business Logic (Day 2)
 
