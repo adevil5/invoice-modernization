@@ -51,18 +51,26 @@ npm test
    - Input validation
 
 ### Key Patterns
-- Repository Pattern with DynamoDB
+- Repository Pattern with DynamoDB (includes pagination and filtering)
+- Query Use Cases with DTO transformations
 - Strategy Pattern for tax calculation
 - Value Objects for data integrity
 - Comprehensive error hierarchy
 - Port-Adapter pattern for infrastructure abstraction
 - Fire-and-forget event publishing for resilience
+- Modular Terraform infrastructure
 
 ### Event Flow
 1. CSV upload → S3 → Lambda
 2. Parse CSV → Create Invoice → EventBridge
 3. Process Invoice → Generate PDF → S3
 4. Publish completion event
+
+### API Flow
+1. REST API → API Gateway → Lambda
+2. Query validation → Use Case → Repository
+3. DynamoDB query with GSIs → DTO transformation
+4. Paginated response with cursor
 
 ## Essential Commands
 
@@ -81,7 +89,13 @@ npm run format        # Format code
 # Infrastructure
 cd infrastructure/terraform
 terraform workspace select dev
+terraform get  # Download modules
+terraform validate  # Validate configuration
 terraform apply -var-file=environments/dev.tfvars
+
+# API Testing
+sam local start-api  # Test API locally
+curl http://localhost:3000/invoices?customerId=CUST123
 ```
 
 ## Critical Configuration
@@ -97,6 +111,8 @@ terraform apply -var-file=environments/dev.tfvars
 - Bulk discount: 3% for 100+ items
 - Tax: State rates + Q4 adjustment (+2% Oct-Dec)
 - Customer tax override takes precedence
+- Invoice status: Pending (default), Paid (paid_at set), Overdue (15+ days unpaid)
+- Query defaults: 90-day date range, 20 item limit
 
 ### Performance
 - ES modules: ~43.5% better cold starts
@@ -158,3 +174,6 @@ For detailed information, see:
 - **Date Handling**: Parse dates at noon local time to avoid timezone issues
 - **Event Publishing**: Failures are logged but don't fail the main operation
 - **Correlation IDs**: Use optional spread pattern for proper TypeScript typing
+- **Terraform Modules**: Use workspace-based environment separation
+- **API Pagination**: Cursor-based with configurable limits (max 100)
+- **Query Patterns**: Use GSIs for efficient filtering by customer, status, date

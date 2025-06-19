@@ -10,6 +10,58 @@ This guide covers infrastructure deployment and management using Terraform and A
 - AWS CLI configured with appropriate credentials
 - Access to target AWS account
 
+### Module Architecture
+
+The infrastructure uses a modular approach with reusable Terraform modules:
+
+#### Available Modules
+
+1. **DynamoDB Module** (`modules/dynamodb/`)
+   - Creates tables with configurable indexes
+   - Auto-scaling policies for read/write capacity
+   - Point-in-time recovery and encryption
+   - DynamoDB Streams for event-driven processing
+
+2. **Lambda Module** (`modules/lambda/`)
+   - Reusable Lambda configuration
+   - ARM64 architecture for cost optimization
+   - Dead letter queue configuration
+   - Blue-green deployment with aliases
+   - Least-privilege IAM policies
+
+3. **API Gateway Module** (`modules/api-gateway/`)
+   - REST API with Lambda proxy integration
+   - Request/response models and validation
+   - API key authentication and usage plans
+   - CloudWatch logging and X-Ray tracing
+
+4. **API Gateway CORS Module** (`modules/api-gateway-cors/`)
+   - Configurable CORS headers
+   - Support for multiple origins
+   - Preflight request handling
+
+#### Module Usage Example
+
+```hcl
+module "invoice_table" {
+  source = "./modules/dynamodb"
+  
+  table_name = "invoice-${var.environment}"
+  hash_key   = "invoiceId"
+  
+  global_secondary_indexes = [
+    {
+      name            = "customerId-index"
+      hash_key        = "customerId"
+      range_key       = "createdAt"
+      projection_type = "ALL"
+    }
+  ]
+  
+  tags = local.common_tags
+}
+```
+
 ### Workspace Management
 
 ```bash
@@ -18,6 +70,12 @@ cd infrastructure/terraform
 
 # Initialize Terraform
 terraform init
+
+# Download/update modules
+terraform get
+
+# Validate configuration
+terraform validate
 
 # List workspaces
 terraform workspace list
@@ -78,17 +136,32 @@ terraform state rm aws_lambda_function.old_processor
 
 ### Lambda Functions
 
-- **InvoiceProcessor**: Processes CSV files from S3
-- **InvoiceAPI**: HTTP API endpoints via API Gateway
-- **PDFGenerator**: Creates invoice PDFs
-- **EventProcessor**: Handles EventBridge events
+- **create-invoice**: Creates new invoices from CSV data
+- **process-invoice**: Processes invoice business logic
+- **generate-pdf**: Creates PDF documents
+- **query-invoices**: Handles invoice queries via API
+- **get-invoice**: Retrieves single invoice details
+- **update-invoice-status**: Updates invoice payment status
+
+Each Lambda function:
+- Uses ARM64 architecture for cost optimization
+- Has dedicated IAM role with least privileges
+- Configured with X-Ray tracing
+- Includes dead letter queue for failures
 
 ### DynamoDB Tables
 
 - **invoices**: Main invoice storage
   - Partition Key: `invoiceId`
-  - Sort Key: `version`
-  - GSI: `customerId-createdAt-index`
+  - Global Secondary Indexes:
+    - `customerId-index`: Query by customer (Hash: customerId, Range: createdAt)
+    - `status-index`: Query by status (Hash: status, Range: createdAt)
+    - `createdAt-index`: Query by date range (Hash: yearMonth, Range: createdAt)
+  - Features:
+    - Point-in-time recovery enabled
+    - Server-side encryption with AWS managed keys
+    - Auto-scaling for read/write capacity
+    - DynamoDB Streams for change capture
   
 ### S3 Buckets
 
@@ -96,12 +169,28 @@ terraform state rm aws_lambda_function.old_processor
 - **invoice-documents**: Generated PDFs
 - **invoice-archives**: Long-term storage
 
+### API Gateway
+
+- **invoice-api**: REST API for invoice operations
+  - Endpoints:
+    - `GET /invoices`: Query invoices with pagination
+    - `GET /invoices/{id}`: Get single invoice
+    - `POST /invoices`: Create new invoice
+    - `PATCH /invoices/{id}`: Update invoice status
+  - Features:
+    - Request validation with JSON Schema models
+    - API key authentication with usage plans
+    - CORS support for web clients
+    - CloudWatch logging and X-Ray tracing
+    - Throttling: 10,000 requests/day, 100/second burst
+
 ### EventBridge
 
 - **invoice-events**: Main event bus
 - Rules:
   - `invoice-created`: Triggers PDF generation
   - `invoice-processed`: Notifies downstream systems
+  - `invoice-paid`: Updates payment tracking
 
 ## Environment Configuration
 

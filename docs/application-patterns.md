@@ -197,6 +197,112 @@ if (exists) {
 }
 ```
 
+## Query Use Case Patterns
+
+### Dual Query Approach
+
+Query use cases support both single-item retrieval and filtered queries:
+
+```typescript
+async execute(dto: QueryInvoiceDto): Promise<QueryInvoiceResponse> {
+  // Single invoice by ID
+  if (dto.invoiceId) {
+    const invoice = await this.invoiceRepository.findById(dto.invoiceId);
+    if (!invoice) {
+      throw new InvoiceNotFoundError(dto.invoiceId);
+    }
+    return {
+      invoices: [this.toDetailView(invoice)],
+      totalCount: 1,
+    };
+  }
+  
+  // Filtered query with pagination
+  const results = await this.queryWithFilters(dto);
+  return results;
+}
+```
+
+### Default Date Range
+
+Queries default to last 90 days if no date range specified:
+
+```typescript
+private getDateRange(dto: QueryInvoiceDto): { startDate: Date; endDate: Date } {
+  const endDate = dto.endDate ? new Date(dto.endDate) : new Date();
+  const startDate = dto.startDate 
+    ? new Date(dto.startDate)
+    : new Date(endDate.getTime() - 90 * 24 * 60 * 60 * 1000); // 90 days
+    
+  return { startDate, endDate };
+}
+```
+
+### Status Determination
+
+Invoice status is calculated dynamically based on business rules:
+
+```typescript
+private determineStatus(invoice: Invoice): 'pending' | 'paid' | 'overdue' {
+  if (invoice.paidAt) {
+    return 'paid';
+  }
+  
+  const daysSinceDue = Math.floor(
+    (Date.now() - invoice.dueDate.getTime()) / (1000 * 60 * 60 * 24)
+  );
+  
+  return daysSinceDue > 15 ? 'overdue' : 'pending';
+}
+```
+
+### DTO Response Transformation
+
+Transform domain entities to summary or detail views:
+
+```typescript
+// Summary view for list responses
+private toSummaryView(invoice: Invoice): InvoiceSummaryDto {
+  return {
+    invoiceId: invoice.id.value,
+    invoiceNumber: invoice.number,
+    customerName: invoice.customer.name,
+    totalAmount: invoice.total.amount,
+    status: this.determineStatus(invoice),
+    createdAt: invoice.createdAt.toISOString(),
+  };
+}
+
+// Detail view for single invoice
+private toDetailView(invoice: Invoice): InvoiceDetailDto {
+  return {
+    ...this.toSummaryView(invoice),
+    items: invoice.items.map(item => ({
+      description: item.description,
+      quantity: item.quantity,
+      unitPrice: item.unitPrice.amount,
+      totalPrice: item.totalPrice.amount,
+    })),
+    taxDetails: {
+      rate: invoice.taxRate.value,
+      amount: invoice.tax.amount,
+    },
+  };
+}
+```
+
+### Pagination with Cursor
+
+Implement cursor-based pagination for efficient querying:
+
+```typescript
+const response: QueryInvoiceResponse = {
+  invoices: paginatedResults.items.map(invoice => this.toSummaryView(invoice)),
+  totalCount: paginatedResults.items.length,
+  nextCursor: paginatedResults.nextCursor,
+};
+```
+
 ## Data Transfer Patterns
 
 ### DTO Simplicity
@@ -240,6 +346,19 @@ export interface InvoiceRepository {
     options?: {
       limit?: number;
       cursor?: string;
+      sortOrder?: 'asc' | 'desc';
+    }
+  ): Promise<{
+    items: Invoice[];
+    nextCursor?: string;
+  }>;
+  
+  findByCustomerId(
+    customerId: string,
+    options?: {
+      limit?: number;
+      cursor?: string;
+      sortBy?: 'createdAt' | 'dueDate' | 'totalAmount';
       sortOrder?: 'asc' | 'desc';
     }
   ): Promise<{
