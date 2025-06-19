@@ -28,10 +28,10 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
   - [x] Test access: `aws sts get-caller-identity --profile invoice`
   - [x] Document environment separation strategy using Terraform workspaces
 
-- [ ] **0.1.3** Setup IDE and tooling
-  - [ ] Install VSCode extensions: ESLint, Prettier, AWS Toolkit, Jest Runner
-  - [ ] Configure `.editorconfig` for consistent formatting
-  - [ ] Setup Git hooks with Husky: `npx husky-init && npm install`
+- [x] **0.1.3** Setup IDE and tooling
+  - [x] Install VSCode extensions: ESLint, Prettier, AWS Toolkit, Jest Runner
+  - [x] Configure `.editorconfig` for consistent formatting
+  - [x] Setup Git hooks with Husky: `npx husky-init && npm install`
 
 ### 0.2 Project Initialization (0.25 days)
 

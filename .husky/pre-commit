@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run linting if script exists
+npm run lint --if-present
+
+# Run tests if script exists
+npm test --if-present
