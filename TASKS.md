@@ -125,11 +125,11 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
   - [x] Create `src/domain/value-objects/tax-rule.ts`
   - [x] Implement strategy pattern for different tax types
 
-- [ ] **1.2.3** Define validation rules
-  - [ ] Write failing test: `tests/unit/domain/validation.test.ts`
-  - [ ] Implement `src/domain/services/validation-service.ts`
-  - [ ] Create custom domain exceptions
-  - [ ] Add comprehensive validation for all invoice fields
+- [x] **1.2.3** Define validation rules
+  - [x] Write failing test: `tests/unit/domain/validation.test.ts`
+  - [x] Implement `src/domain/services/validation-service.ts`
+  - [x] Create custom domain exceptions
+  - [x] Add comprehensive validation for all invoice fields
 
 ### 1.3 Application Services (0.5 days)
 
