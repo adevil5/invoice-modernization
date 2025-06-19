@@ -85,3 +85,62 @@ output "common_tags" {
   description = "Common tags applied to all resources"
   value       = local.common_tags
 }
+
+# Lambda Function Outputs
+output "lambda_functions" {
+  description = "Details of all Lambda functions"
+  value = {
+    create_invoice = {
+      name        = module.create_invoice_lambda.function_name
+      arn         = module.create_invoice_lambda.function_arn
+      invoke_arn  = module.create_invoice_lambda.function_invoke_arn
+      alias_arn   = module.create_invoice_lambda.function_alias_arn
+      role_arn    = module.create_invoice_lambda.role_arn
+    }
+    process_invoice = {
+      name        = module.process_invoice_lambda.function_name
+      arn         = module.process_invoice_lambda.function_arn
+      invoke_arn  = module.process_invoice_lambda.function_invoke_arn
+      alias_arn   = module.process_invoice_lambda.function_alias_arn
+      role_arn    = module.process_invoice_lambda.role_arn
+    }
+    get_invoice = {
+      name        = module.get_invoice_lambda.function_name
+      arn         = module.get_invoice_lambda.function_arn
+      invoke_arn  = module.get_invoice_lambda.function_invoke_arn
+      alias_arn   = module.get_invoice_lambda.function_alias_arn
+      role_arn    = module.get_invoice_lambda.role_arn
+    }
+    list_invoices = {
+      name        = module.list_invoices_lambda.function_name
+      arn         = module.list_invoices_lambda.function_arn
+      invoke_arn  = module.list_invoices_lambda.function_invoke_arn
+      alias_arn   = module.list_invoices_lambda.function_alias_arn
+      role_arn    = module.list_invoices_lambda.role_arn
+    }
+    csv_upload = {
+      name        = module.csv_upload_lambda.function_name
+      arn         = module.csv_upload_lambda.function_arn
+      invoke_arn  = module.csv_upload_lambda.function_invoke_arn
+      alias_arn   = module.csv_upload_lambda.function_alias_arn
+      role_arn    = module.csv_upload_lambda.role_arn
+    }
+    dlq_handler = {
+      name        = module.dlq_handler_lambda.function_name
+      arn         = module.dlq_handler_lambda.function_arn
+      invoke_arn  = module.dlq_handler_lambda.function_invoke_arn
+      alias_arn   = module.dlq_handler_lambda.function_alias_arn
+      role_arn    = module.dlq_handler_lambda.role_arn
+    }
+  }
+}
+
+# SQS Dead Letter Queue Outputs
+output "lambda_dlq" {
+  description = "Lambda Dead Letter Queue details"
+  value = {
+    url = aws_sqs_queue.lambda_dlq.url
+    arn = aws_sqs_queue.lambda_dlq.arn
+    name = aws_sqs_queue.lambda_dlq.name
+  }
+}

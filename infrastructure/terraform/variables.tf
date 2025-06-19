@@ -114,6 +114,23 @@ variable "alarm_email" {
   default     = ""
 }
 
+variable "log_level" {
+  description = "Log level for Lambda functions"
+  type        = string
+  default     = "INFO"
+  
+  validation {
+    condition     = contains(["DEBUG", "INFO", "WARN", "ERROR"], var.log_level)
+    error_message = "Log level must be one of: DEBUG, INFO, WARN, ERROR."
+  }
+}
+
+variable "alert_sns_topic_arn" {
+  description = "SNS topic ARN for alerts (e.g., DLQ messages)"
+  type        = string
+  default     = ""
+}
+
 # Feature flags
 variable "enable_dead_letter_queue" {
   description = "Enable dead letter queue for async processing"
@@ -125,6 +142,18 @@ variable "enable_api_caching" {
   description = "Enable API Gateway caching"
   type        = bool
   default     = false
+}
+
+# Lambda specific configuration
+variable "pdf_generation_concurrency" {
+  description = "Reserved concurrent executions for PDF generation Lambda"
+  type        = number
+  default     = 10
+  
+  validation {
+    condition     = var.pdf_generation_concurrency >= -1
+    error_message = "PDF generation concurrency must be -1 (unreserved) or a positive number."
+  }
 }
 
 # Security

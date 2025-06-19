@@ -173,11 +173,11 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
   - [x] Setup auto-scaling policies
   - [x] Enable point-in-time recovery
 
-- [ ] **2.1.3** Define Lambda infrastructure
-  - [ ] Write Terraform module: `modules/lambda/main.tf`
-  - [ ] Configure function with environment variables
-  - [ ] Setup IAM roles with least privilege
-  - [ ] Configure VPC settings if needed
+- [x] **2.1.3** Define Lambda infrastructure
+  - [x] Write Terraform module: `modules/lambda/main.tf`
+  - [x] Configure function with environment variables
+  - [x] Setup IAM roles with least privilege
+  - [x] Configure VPC settings if needed
 
 - [ ] **2.1.4** Define API Gateway infrastructure
   - [ ] Write Terraform module: `modules/api-gateway/main.tf`

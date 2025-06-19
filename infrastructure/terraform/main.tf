@@ -190,3 +190,356 @@ resource "aws_kms_alias" "main" {
   name          = "alias/${local.project}-${local.environment}"
   target_key_id = aws_kms_key.main.key_id
 }
+
+# SQS Dead Letter Queue for Lambda failures
+resource "aws_sqs_queue" "lambda_dlq" {
+  name                      = "${local.project}-lambda-dlq-${local.environment}"
+  message_retention_seconds = 1209600  # 14 days
+  
+  tags = merge(local.common_tags, {
+    Name = "${local.project}-lambda-dlq-${local.environment}"
+  })
+}
+
+# Lambda Functions
+
+# Create Invoice Lambda (HTTP API)
+module "create_invoice_lambda" {
+  source = "./modules/lambda"
+
+  project_name  = local.project
+  function_name = "create-invoice"
+  environment   = local.environment
+  
+  handler       = "create-invoice-handler.handler"
+  runtime       = "nodejs22.x"
+  timeout       = local.current_env_config.lambda_timeout
+  memory_size   = local.current_env_config.lambda_memory_size
+  architecture  = "arm64"
+  
+  s3_bucket = aws_s3_bucket.lambda_deployments.id
+  s3_key    = "functions/create-invoice-handler.zip"
+  
+  log_group_name = aws_cloudwatch_log_group.lambda_logs.name
+  
+  environment_variables = {
+    DYNAMODB_TABLE_NAME    = module.invoice_dynamodb.table_name
+    EVENTBRIDGE_BUS_NAME   = aws_cloudwatch_event_bus.main.name
+    KMS_KEY_ID            = aws_kms_key.main.id
+    LOG_LEVEL             = var.log_level
+  }
+  
+  policy_statements = [
+    {
+      Effect = "Allow"
+      Action = [
+        "dynamodb:PutItem",
+        "dynamodb:GetItem",
+        "dynamodb:UpdateItem"
+      ]
+      Resource = [module.invoice_dynamodb.table_arn]
+    },
+    {
+      Effect = "Allow"
+      Action = ["events:PutEvents"]
+      Resource = [aws_cloudwatch_event_bus.main.arn]
+    },
+    {
+      Effect = "Allow"
+      Action = [
+        "kms:Decrypt",
+        "kms:GenerateDataKey"
+      ]
+      Resource = [aws_kms_key.main.arn]
+    }
+  ]
+  
+  dead_letter_config = {
+    target_arn = aws_sqs_queue.lambda_dlq.arn
+  }
+  
+  common_tags = local.common_tags
+}
+
+# Process Invoice Lambda (EventBridge triggered)
+module "process_invoice_lambda" {
+  source = "./modules/lambda"
+
+  project_name  = local.project
+  function_name = "process-invoice"
+  environment   = local.environment
+  
+  handler       = "process-invoice-handler.handler"
+  runtime       = "nodejs22.x"
+  timeout       = 300  # 5 minutes for PDF generation
+  memory_size   = 2048  # More memory for Puppeteer
+  architecture  = "x86_64"  # Puppeteer/Chromium compatibility
+  
+  s3_bucket = aws_s3_bucket.lambda_deployments.id
+  s3_key    = "functions/process-invoice-handler.zip"
+  
+  log_group_name = aws_cloudwatch_log_group.lambda_logs.name
+  
+  environment_variables = {
+    DYNAMODB_TABLE_NAME    = module.invoice_dynamodb.table_name
+    S3_BUCKET_NAME        = aws_s3_bucket.invoices.id
+    EVENTBRIDGE_BUS_NAME   = aws_cloudwatch_event_bus.main.name
+    KMS_KEY_ID            = aws_kms_key.main.id
+    LOG_LEVEL             = var.log_level
+    CHROMIUM_PATH         = "/opt/chromium"
+  }
+  
+  policy_statements = [
+    {
+      Effect = "Allow"
+      Action = [
+        "dynamodb:GetItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:Query"
+      ]
+      Resource = [
+        module.invoice_dynamodb.table_arn,
+        "${module.invoice_dynamodb.table_arn}/index/*"
+      ]
+    },
+    {
+      Effect = "Allow"
+      Action = [
+        "s3:PutObject",
+        "s3:PutObjectAcl"
+      ]
+      Resource = ["${aws_s3_bucket.invoices.arn}/*"]
+    },
+    {
+      Effect = "Allow"
+      Action = ["events:PutEvents"]
+      Resource = [aws_cloudwatch_event_bus.main.arn]
+    },
+    {
+      Effect = "Allow"
+      Action = [
+        "kms:Decrypt",
+        "kms:GenerateDataKey"
+      ]
+      Resource = [aws_kms_key.main.arn]
+    }
+  ]
+  
+  dead_letter_config = {
+    target_arn = aws_sqs_queue.lambda_dlq.arn
+  }
+  
+  # Reserved concurrency for PDF generation
+  reserved_concurrent_executions = var.pdf_generation_concurrency
+  
+  common_tags = local.common_tags
+}
+
+# Get Invoice Lambda (HTTP API)
+module "get_invoice_lambda" {
+  source = "./modules/lambda"
+
+  project_name  = local.project
+  function_name = "get-invoice"
+  environment   = local.environment
+  
+  handler       = "get-invoice-handler.handler"
+  runtime       = "nodejs22.x"
+  timeout       = local.current_env_config.lambda_timeout
+  memory_size   = local.current_env_config.lambda_memory_size
+  architecture  = "arm64"
+  
+  s3_bucket = aws_s3_bucket.lambda_deployments.id
+  s3_key    = "functions/get-invoice-handler.zip"
+  
+  log_group_name = aws_cloudwatch_log_group.lambda_logs.name
+  
+  environment_variables = {
+    DYNAMODB_TABLE_NAME = module.invoice_dynamodb.table_name
+    S3_BUCKET_NAME     = aws_s3_bucket.invoices.id
+    KMS_KEY_ID         = aws_kms_key.main.id
+    LOG_LEVEL          = var.log_level
+  }
+  
+  policy_statements = [
+    {
+      Effect = "Allow"
+      Action = ["dynamodb:GetItem"]
+      Resource = [module.invoice_dynamodb.table_arn]
+    },
+    {
+      Effect = "Allow"
+      Action = ["s3:GetObject"]
+      Resource = ["${aws_s3_bucket.invoices.arn}/*"]
+    },
+    {
+      Effect = "Allow"
+      Action = ["kms:Decrypt"]
+      Resource = [aws_kms_key.main.arn]
+    }
+  ]
+  
+  common_tags = local.common_tags
+}
+
+# List Invoices Lambda (HTTP API)
+module "list_invoices_lambda" {
+  source = "./modules/lambda"
+
+  project_name  = local.project
+  function_name = "list-invoices"
+  environment   = local.environment
+  
+  handler       = "list-invoices-handler.handler"
+  runtime       = "nodejs22.x"
+  timeout       = local.current_env_config.lambda_timeout
+  memory_size   = local.current_env_config.lambda_memory_size
+  architecture  = "arm64"
+  
+  s3_bucket = aws_s3_bucket.lambda_deployments.id
+  s3_key    = "functions/list-invoices-handler.zip"
+  
+  log_group_name = aws_cloudwatch_log_group.lambda_logs.name
+  
+  environment_variables = {
+    DYNAMODB_TABLE_NAME = module.invoice_dynamodb.table_name
+    KMS_KEY_ID         = aws_kms_key.main.id
+    LOG_LEVEL          = var.log_level
+    PAGE_SIZE          = "50"
+  }
+  
+  policy_statements = [
+    {
+      Effect = "Allow"
+      Action = [
+        "dynamodb:Query",
+        "dynamodb:Scan"
+      ]
+      Resource = [
+        module.invoice_dynamodb.table_arn,
+        "${module.invoice_dynamodb.table_arn}/index/*"
+      ]
+    },
+    {
+      Effect = "Allow"
+      Action = ["kms:Decrypt"]
+      Resource = [aws_kms_key.main.arn]
+    }
+  ]
+  
+  common_tags = local.common_tags
+}
+
+# CSV Upload Lambda (S3 triggered)
+module "csv_upload_lambda" {
+  source = "./modules/lambda"
+
+  project_name  = local.project
+  function_name = "csv-upload"
+  environment   = local.environment
+  
+  handler       = "csv-upload-handler.handler"
+  runtime       = "nodejs22.x"
+  timeout       = 300  # 5 minutes for large CSV files
+  memory_size   = 1024
+  architecture  = "arm64"
+  
+  s3_bucket = aws_s3_bucket.lambda_deployments.id
+  s3_key    = "functions/csv-upload-handler.zip"
+  
+  log_group_name = aws_cloudwatch_log_group.lambda_logs.name
+  
+  environment_variables = {
+    DYNAMODB_TABLE_NAME    = module.invoice_dynamodb.table_name
+    EVENTBRIDGE_BUS_NAME   = aws_cloudwatch_event_bus.main.name
+    KMS_KEY_ID            = aws_kms_key.main.id
+    LOG_LEVEL             = var.log_level
+    MAX_BATCH_SIZE        = "25"
+  }
+  
+  policy_statements = [
+    {
+      Effect = "Allow"
+      Action = ["s3:GetObject"]
+      Resource = ["${aws_s3_bucket.invoices.arn}/*"]
+    },
+    {
+      Effect = "Allow"
+      Action = [
+        "dynamodb:PutItem",
+        "dynamodb:BatchWriteItem"
+      ]
+      Resource = [module.invoice_dynamodb.table_arn]
+    },
+    {
+      Effect = "Allow"
+      Action = ["events:PutEvents"]
+      Resource = [aws_cloudwatch_event_bus.main.arn]
+    },
+    {
+      Effect = "Allow"
+      Action = [
+        "kms:Decrypt",
+        "kms:GenerateDataKey"
+      ]
+      Resource = [aws_kms_key.main.arn]
+    }
+  ]
+  
+  dead_letter_config = {
+    target_arn = aws_sqs_queue.lambda_dlq.arn
+  }
+  
+  trigger_permissions = {
+    s3_bucket = {
+      principal  = "s3.amazonaws.com"
+      source_arn = aws_s3_bucket.invoices.arn
+    }
+  }
+  
+  common_tags = local.common_tags
+}
+
+# DLQ Handler Lambda
+module "dlq_handler_lambda" {
+  source = "./modules/lambda"
+
+  project_name  = local.project
+  function_name = "dlq-handler"
+  environment   = local.environment
+  
+  handler       = "dlq-handler.handler"
+  runtime       = "nodejs22.x"
+  timeout       = 60
+  memory_size   = 512
+  architecture  = "arm64"
+  
+  s3_bucket = aws_s3_bucket.lambda_deployments.id
+  s3_key    = "functions/dlq-handler.zip"
+  
+  log_group_name = aws_cloudwatch_log_group.lambda_logs.name
+  
+  environment_variables = {
+    LOG_LEVEL = var.log_level
+    SNS_TOPIC_ARN = var.alert_sns_topic_arn
+  }
+  
+  policy_statements = [
+    {
+      Effect = "Allow"
+      Action = [
+        "sqs:ReceiveMessage",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes"
+      ]
+      Resource = [aws_sqs_queue.lambda_dlq.arn]
+    },
+    {
+      Effect = "Allow"
+      Action = ["sns:Publish"]
+      Resource = [var.alert_sns_topic_arn]
+    }
+  ]
+  
+  common_tags = local.common_tags
+}
