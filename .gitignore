@@ -1,0 +1,65 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# AWS credentials
+.aws/
+~/.aws/
+
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+build/
+*.zip
+
+# Coverage
+coverage/
+.nyc_output/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+*.tfvars
+!example.tfvars
+
+# LocalStack
+.localstack/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Lambda packages
+lambda-*.zip
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+ENV/
+
+# Testing
+test-results/
+junit.xml
