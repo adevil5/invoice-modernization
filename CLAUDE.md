@@ -18,7 +18,9 @@ This is an invoice modernization project that transforms a legacy Python 2.7 inv
 ### Initial Setup
 
 ```bash
-# Install Node.js 22 LTS
+# Install Node.js 22 LTS (uses .nvmrc if nvm is installed)
+nvm install
+# Or install latest LTS
 nvm install --lts
 
 # Initialize TypeScript project with ESM support
