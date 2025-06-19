@@ -35,16 +35,18 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
 
 ### 0.2 Project Initialization (0.25 days)
 
-- [ ] **0.2.1** Initialize TypeScript project with best practices
+- [x] **0.2.1** Initialize TypeScript project with best practices
 
   ```bash
   mkdir invoice-modernization && cd invoice-modernization
   npm init -y
-  npx tsc --init --target es2022 --module commonjs --strict
+  npm install -D typescript
+  npx tsc --init --target es2022 --module es2022 --moduleResolution bundler --strict
   ```
 
-  - [ ] Configure `tsconfig.json` with paths, strict mode, and ES2022 features
-  - [ ] Setup `tsconfig.build.json` excluding tests
+  - [x] Configure `tsconfig.json` with paths, strict mode, and ES2022 features
+  - [x] Setup `tsconfig.build.json` excluding tests
+  - [x] Set `"type": "module"` in package.json for ESM support
 
 - [ ] **0.2.2** Setup project structure following clean architecture
 

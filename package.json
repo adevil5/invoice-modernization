@@ -8,13 +8,17 @@
   },
   "scripts": {
     "test": "echo \"No tests configured yet\"",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "bundle": "echo \"esbuild bundling not configured yet\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "devDependencies": {
-    "husky": "^8.0.0"
+    "husky": "^8.0.0",
+    "typescript": "^5.8.3"
   }
 }
