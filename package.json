@@ -1,21 +1,26 @@
 {
   "name": "invoice-modernization",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Cloud-native invoice processing service using TypeScript, AWS Lambda, and DynamoDB",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"No tests configured yet\"",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:integration": "jest --testMatch='**/tests/integration/**/*.test.ts'",
+    "test:e2e": "jest --testMatch='**/tests/e2e/**/*.test.ts'",
     "prepare": "husky install",
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
-    "bundle": "echo \"esbuild bundling not configured yet\""
+    "bundle": "esbuild src/interfaces/http/*.ts src/interfaces/events/*.ts --bundle --platform=node --target=node22 --format=esm --outdir=dist",
+    "lint": "eslint 'src/**/*.ts' 'tests/**/*.ts'",
+    "lint:fix": "eslint 'src/**/*.ts' 'tests/**/*.ts' --fix",
+    "format": "prettier --write 'src/**/*.ts' 'tests/**/*.ts'"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["invoice", "aws", "lambda", "serverless", "typescript"],
+  "author": "Invoice Modernization Team",
+  "license": "MIT",
   "type": "module",
   "devDependencies": {
     "husky": "^8.0.0",

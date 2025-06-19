@@ -8,6 +8,7 @@
     "module": "es2022",
     "rootDir": "./src",
     "moduleResolution": "bundler",
+    "moduleDetection": "force",
     "baseUrl": "./",
     "paths": {
       "@domain/*": ["src/domain/*"],
@@ -19,7 +20,6 @@
 
     /* Emit */
     "outDir": "./dist",
-    "sourceMap": false,
     "noEmit": true,
     "declaration": true,
     "declarationMap": true,
