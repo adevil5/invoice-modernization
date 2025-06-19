@@ -1,0 +1,32 @@
+{
+  "id": "INV-2024-001",
+  "customerName": "Sample Customer Inc.",
+  "customerEmail": "billing@samplecustomer.com",
+  "customerAddress": {
+    "street": "123 Main St",
+    "city": "San Francisco",
+    "state": "CA",
+    "zipCode": "94105"
+  },
+  "items": [
+    {
+      "description": "Professional Services",
+      "quantity": 10,
+      "unitPrice": 150.00,
+      "total": 1500.00
+    },
+    {
+      "description": "Software License",
+      "quantity": 1,
+      "unitPrice": 500.00,
+      "total": 500.00
+    }
+  ],
+  "subtotal": 2000.00,
+  "taxRate": 0.0875,
+  "tax": 175.00,
+  "total": 2175.00,
+  "status": "pending",
+  "createdAt": "2024-01-15T10:30:00Z",
+  "dueDate": "2024-02-15T10:30:00Z"
+}

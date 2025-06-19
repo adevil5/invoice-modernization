@@ -1,0 +1,5 @@
+Customer Name,Customer Email,Item Description,Quantity,Unit Price,Tax Rate
+John Doe,john.doe@example.com,Widget A,5,10.50,0.08
+Jane Smith,jane.smith@example.com,Service B,2,75.00,0.10
+ABC Corp,billing@abccorp.com,Product C,10,25.00,0.08
+XYZ Inc,accounts@xyzinc.com,Subscription D,1,299.99,0.10

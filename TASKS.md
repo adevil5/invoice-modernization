@@ -48,7 +48,7 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
   - [x] Setup `tsconfig.build.json` excluding tests
   - [x] Set `"type": "module"` in package.json for ESM support
 
-- [ ] **0.2.2** Setup project structure following clean architecture
+- [x] **0.2.2** Setup project structure following clean architecture
 
   ```bash
   mkdir -p src/{domain,application,infrastructure,interfaces}
@@ -57,17 +57,17 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
   mkdir -p docs/{api,architecture}
   ```
 
-- [ ] **0.2.3** Initialize testing framework
-  - [ ] Install Jest with TypeScript: `npm i -D jest @types/jest ts-jest`
-  - [ ] Run `npx ts-jest config:init` to generate jest.config.js
-  - [ ] Configure coverage thresholds: 80% minimum
-  - [ ] Create test helpers and fixtures directories
+- [x] **0.2.3** Initialize testing framework
+  - [x] Install Jest with TypeScript: `npm i -D jest @types/jest ts-jest`
+  - [x] Run `npx ts-jest config:init` to generate jest.config.js
+  - [x] Configure coverage thresholds: 80% minimum
+  - [x] Create test helpers and fixtures directories
 
-- [ ] **0.2.4** Setup linting and formatting
-  - [ ] Install ESLint: `npm i -D eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin`
-  - [ ] Run `npx eslint --init` selecting TypeScript and Node.js
-  - [ ] Install Prettier: `npm i -D prettier eslint-config-prettier`
-  - [ ] Create `.prettierrc` and `.eslintignore` files
+- [x] **0.2.4** Setup linting and formatting
+  - [x] Install ESLint: `npm i -D eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin`
+  - [x] Run `npx eslint --init` selecting TypeScript and Node.js
+  - [x] Install Prettier: `npm i -D prettier eslint-config-prettier`
+  - [x] Create `.prettierrc` and `.eslintignore` files
 
 ### 0.3 CI/CD Pipeline Foundation (0.5 days)
 
