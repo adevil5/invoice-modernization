@@ -146,11 +146,11 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
   - [x] Define PDF generator interface
   - [x] Add event publisher interface
 
-- [ ] **1.3.3** Implement QueryInvoice use case
-  - [ ] Write failing test: `tests/unit/application/query-invoice.test.ts`
-  - [ ] Implement `src/application/use-cases/query-invoice.ts`
-  - [ ] Add pagination support
-  - [ ] Include filtering and sorting logic
+- [x] **1.3.3** Implement QueryInvoice use case
+  - [x] Write failing test: `tests/unit/application/query-invoice.test.ts`
+  - [x] Implement `src/application/use-cases/query-invoice.ts`
+  - [x] Add pagination support
+  - [x] Include filtering and sorting logic
 
 ## Phase 2: Infrastructure Implementation (Day 3)
 
