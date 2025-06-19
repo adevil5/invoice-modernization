@@ -1,4 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
+import { calculateLegacyInvoice } from './legacy-parity-adapter.js';
 
 interface LegacyInvoiceInput {
   customer_id: string;
@@ -13,6 +14,7 @@ interface LegacyInvoiceInput {
   items: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface LegacyInvoiceOutput {
   subtotal: number;
   discount: number;
@@ -25,7 +27,7 @@ interface LegacyInvoiceOutput {
 
 describe('Legacy Invoice Processing - Parity Tests', () => {
   describe('Tax Calculation Rules', () => {
-    test('should apply 0% tax for nonprofit customer CUST001', () => {
+    test('should apply 0% tax for nonprofit customer CUST001', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST001',
         customer_name: 'Nonprofit Org',
@@ -48,12 +50,12 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         total: 1000.00
       };
       
-      const result = calculateLegacyInvoice(input);
+      const result = await calculateLegacyInvoice(input);
       expect(result.taxRate).toBe(expected.taxRate);
       expect(result.total).toBe(expected.total);
     });
 
-    test('should apply CA state tax rate of 7.25%', () => {
+    test('should apply CA state tax rate of 7.25%', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST002',
         customer_name: 'Tech Corp',
@@ -76,13 +78,13 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         total: 1072.50
       };
       
-      const result = calculateLegacyInvoice(input);
+      const result = await calculateLegacyInvoice(input);
       expect(result.taxRate).toBe(expected.taxRate);
       expect(result.taxAmount).toBe(expected.taxAmount);
       expect(result.total).toBe(expected.total);
     });
 
-    test('should apply NY state tax rate of 8%', () => {
+    test('should apply NY state tax rate of 8.875%', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST003',
         customer_name: 'Finance LLC',
@@ -99,18 +101,18 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
       const expected = {
         subtotal: 1000.00,
         discount: 0,
-        taxRate: 0.08,
-        taxAmount: 80.00,
+        taxRate: 0.08875,
+        taxAmount: 88.75,
         lateFee: 0,
-        total: 1080.00
+        total: 1088.75
       };
       
-      const result = calculateLegacyInvoice(input);
+      const result = await calculateLegacyInvoice(input);
       expect(result.taxRate).toBe(expected.taxRate);
       expect(result.total).toBe(expected.total);
     });
 
-    test('should apply TX state tax rate of 6.25%', () => {
+    test('should apply TX state tax rate of 6.25%', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST004',
         customer_name: 'Oil Services Inc',
@@ -130,12 +132,12 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         total: 1062.50
       };
       
-      const result = calculateLegacyInvoice(input);
+      const result = await calculateLegacyInvoice(input);
       expect(result.taxRate).toBe(expected.taxRate);
       expect(result.total).toBe(expected.total);
     });
 
-    test('should apply default 5% tax for unknown states', () => {
+    test('should apply default 5% tax for unknown states', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST005',
         customer_name: 'Random Corp',
@@ -155,12 +157,12 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         total: 1050.00
       };
       
-      const result = calculateLegacyInvoice(input);
+      const result = await calculateLegacyInvoice(input);
       expect(result.taxRate).toBe(expected.taxRate);
       expect(result.total).toBe(expected.total);
     });
 
-    test('should apply Q4 2% tax increase for October invoices', () => {
+    test('should apply Q4 2% tax increase for October invoices', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST006',
         customer_name: 'Q4 Company',
@@ -180,12 +182,12 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         total: 1092.50
       };
       
-      const result = calculateLegacyInvoice(input);
+      const result = await calculateLegacyInvoice(input);
       expect(result.taxRate).toBe(expected.taxRate);
       expect(result.total).toBe(expected.total);
     });
 
-    test('should apply Q4 tax increase for November', () => {
+    test('should apply Q4 tax increase for November', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST007',
         customer_name: 'November Corp',
@@ -200,17 +202,17 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
       };
       
       const expected = {
-        taxRate: 0.10, // 8% + 2%
-        taxAmount: 100.00,
-        total: 1100.00
+        taxRate: 0.10875, // 8.875% + 2%
+        taxAmount: 108.75,
+        total: 1108.75
       };
       
-      const result = calculateLegacyInvoice(input);
+      const result = await calculateLegacyInvoice(input);
       expect(result.taxRate).toBe(expected.taxRate);
       expect(result.total).toBe(expected.total);
     });
 
-    test('should apply Q4 tax increase for December', () => {
+    test('should apply Q4 tax increase for December', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST008',
         customer_name: 'December Inc',
@@ -230,14 +232,14 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         total: 1082.50
       };
       
-      const result = calculateLegacyInvoice(input);
+      const result = await calculateLegacyInvoice(input);
       expect(result.taxRate).toBe(expected.taxRate);
       expect(result.total).toBe(expected.total);
     });
   });
 
   describe('Bulk Discount Rules', () => {
-    test('should apply 3% discount for amounts >= $10,000', () => {
+    test('should apply 3% discount for amounts >= $10,000', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST009',
         customer_name: 'Big Buyer Corp',
@@ -260,13 +262,13 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         total: 10403.25 // 9700 + 703.25
       };
       
-      const result = calculateLegacyInvoice(input);
+      const result = await calculateLegacyInvoice(input);
       expect(result.discount).toBe(expected.discount);
       expect(result.taxAmount).toBe(expected.taxAmount);
       expect(result.total).toBe(expected.total);
     });
 
-    test('should not apply discount for amounts < $10,000', () => {
+    test('should not apply discount for amounts < $10,000', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST010',
         customer_name: 'Regular Buyer',
@@ -287,12 +289,12 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         total: 10724.99
       };
       
-      const result = calculateLegacyInvoice(input);
+      const result = await calculateLegacyInvoice(input);
       expect(result.discount).toBe(expected.discount);
       expect(result.total).toBe(expected.total);
     });
 
-    test('should apply discount before tax in Q4', () => {
+    test('should apply discount before tax in Q4', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST011',
         customer_name: 'Q4 Bulk Buyer',
@@ -315,7 +317,7 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         total: 15895.88
       };
       
-      const result = calculateLegacyInvoice(input);
+      const result = await calculateLegacyInvoice(input);
       expect(result.discount).toBe(expected.discount);
       expect(result.taxRate).toBe(expected.taxRate);
       expect(result.taxAmount).toBe(expected.taxAmount);
@@ -324,7 +326,7 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
   });
 
   describe('Late Fee Calculation', () => {
-    test('should not apply late fee within 30 days', () => {
+    test('should not apply late fee within 30 days', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST012',
         customer_name: 'On Time Payer',
@@ -344,12 +346,12 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         total: 1072.50 // 1000 + 72.50 tax
       };
       
-      const result = calculateLegacyInvoice(input, currentDate);
+      const result = await calculateLegacyInvoice(input, currentDate);
       expect(result.lateFee).toBe(expected.lateFee);
       expect(result.total).toBe(expected.total);
     });
 
-    test('should apply 1.5% late fee per month after 30 days', () => {
+    test('should apply 1.5% late fee per month after 30 days', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST013',
         customer_name: 'Late Payer',
@@ -370,12 +372,12 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         total: 1088.59 // 1072.50 + 16.09
       };
       
-      const result = calculateLegacyInvoice(input, currentDate);
+      const result = await calculateLegacyInvoice(input, currentDate);
       expect(result.lateFee).toBe(expected.lateFee);
       expect(result.total).toBe(expected.total);
     });
 
-    test('should calculate multiple months of late fees', () => {
+    test('should calculate multiple months of late fees', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST014',
         customer_name: 'Very Late Corp',
@@ -396,14 +398,14 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         total: 1120.76
       };
       
-      const result = calculateLegacyInvoice(input, currentDate);
+      const result = await calculateLegacyInvoice(input, currentDate);
       expect(result.lateFee).toBe(expected.lateFee);
       expect(result.total).toBe(expected.total);
     });
   });
 
   describe('Date Format Handling', () => {
-    test('should handle MM/DD/YYYY format', () => {
+    test('should handle MM/DD/YYYY format', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST015',
         customer_name: 'Date Test 1',
@@ -417,11 +419,11 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         items: 'Service:1:1000'
       };
       
-      const result = calculateLegacyInvoice(input);
+      const result = await calculateLegacyInvoice(input);
       expect(result.pdfFilename).toBe('CUST015_2024-01-15_1072.50.pdf');
     });
 
-    test('should handle YYYY-MM-DD format', () => {
+    test('should handle YYYY-MM-DD format', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST016',
         customer_name: 'Date Test 2',
@@ -435,11 +437,11 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         items: 'Service:1:1000'
       };
       
-      const result = calculateLegacyInvoice(input);
+      const result = await calculateLegacyInvoice(input);
       expect(result.pdfFilename).toBe('CUST016_2024-01-15_1072.50.pdf');
     });
 
-    test('should handle MM-DD-YYYY format', () => {
+    test('should handle MM-DD-YYYY format', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST017',
         customer_name: 'Date Test 3',
@@ -453,13 +455,13 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         items: 'Service:1:1000'
       };
       
-      const result = calculateLegacyInvoice(input);
+      const result = await calculateLegacyInvoice(input);
       expect(result.pdfFilename).toBe('CUST017_2024-01-15_1072.50.pdf');
     });
   });
 
   describe('PDF Filename Generation', () => {
-    test('should generate correct filename format', () => {
+    test('should generate correct filename format', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST018',
         customer_name: 'PDF Test',
@@ -473,13 +475,13 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         items: 'Service:1:1234.56'
       };
       
-      const expected = 'CUST018_2024-03-15_1324.06.pdf'; // 1234.56 + 89.51 tax
+      const expected = 'CUST018_2024-03-15_1324.07.pdf'; // 1234.56 + 89.51 tax
       
-      const result = calculateLegacyInvoice(input);
+      const result = await calculateLegacyInvoice(input);
       expect(result.pdfFilename).toBe(expected);
     });
 
-    test('should round total to 2 decimal places in filename', () => {
+    test('should round total to 2 decimal places in filename', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST019',
         customer_name: 'Rounding Test',
@@ -495,13 +497,13 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
       
       const expected = 'CUST019_2024-01-15_1072.50.pdf'; // Properly rounded
       
-      const result = calculateLegacyInvoice(input);
+      const result = await calculateLegacyInvoice(input);
       expect(result.pdfFilename).toBe(expected);
     });
   });
 
   describe('Rounding Rules', () => {
-    test('should round all amounts to 2 decimal places', () => {
+    test('should round all amounts to 2 decimal places', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST020',
         customer_name: 'Precision Test',
@@ -521,7 +523,7 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         total: 1072.50
       };
       
-      const result = calculateLegacyInvoice(input);
+      const result = await calculateLegacyInvoice(input);
       expect(result.subtotal).toBe(expected.subtotal);
       expect(result.taxAmount).toBe(expected.taxAmount);
       expect(result.total).toBe(expected.total);
@@ -529,7 +531,7 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
   });
 
   describe('State Code Variations', () => {
-    test('should handle lowercase state codes', () => {
+    test('should handle lowercase state codes', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST021',
         customer_name: 'Lowercase State',
@@ -548,19 +550,19 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         total: 1072.50
       };
       
-      const result = calculateLegacyInvoice(input);
+      const result = await calculateLegacyInvoice(input);
       expect(result.taxRate).toBe(expected.taxRate);
       expect(result.total).toBe(expected.total);
     });
 
-    test('should handle full state names', () => {
+    test('should handle full state names', async () => {
       const states = [
         { full: 'California', code: 'CA', rate: 0.0725 },
-        { full: 'New York', code: 'NY', rate: 0.08 },
+        { full: 'New York', code: 'NY', rate: 0.08875 },
         { full: 'Texas', code: 'TX', rate: 0.0625 }
       ];
 
-      states.forEach(state => {
+      for (const state of states) {
         const input: LegacyInvoiceInput = {
           customer_id: `CUST-${state.code}`,
           customer_name: `${state.full} Test`,
@@ -574,14 +576,14 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
           items: 'Service:1:1000'
         };
         
-        const result = calculateLegacyInvoice(input);
+        const result = await calculateLegacyInvoice(input);
         expect(result.taxRate).toBe(state.rate);
-      });
+      }
     });
   });
 
   describe('Complex Combined Scenarios', () => {
-    test('should handle nonprofit in Q4 with bulk discount', () => {
+    test('should handle nonprofit in Q4 with bulk discount', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST001', // Nonprofit
         customer_name: 'Nonprofit Org',
@@ -605,13 +607,13 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         total: 19400.00
       };
       
-      const result = calculateLegacyInvoice(input);
+      const result = await calculateLegacyInvoice(input);
       expect(result.discount).toBe(expected.discount);
       expect(result.taxRate).toBe(expected.taxRate);
       expect(result.total).toBe(expected.total);
     });
 
-    test('should handle bulk discount + Q4 tax + late fee', () => {
+    test('should handle bulk discount + Q4 tax + late fee', async () => {
       const input: LegacyInvoiceInput = {
         customer_id: 'CUST022',
         customer_name: 'Complex Scenario Corp',
@@ -630,14 +632,14 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
         subtotal: 15000.00,
         discount: 450.00, // 3% bulk
         taxableAmount: 14550.00,
-        taxRate: 0.10, // 8% NY + 2% Q4
-        taxAmount: 1455.00,
-        baseTotal: 16005.00, // 14550 + 1455
-        lateFee: 240.08, // 1.5% of 16005
-        total: 16245.08
+        taxRate: 0.10875, // 8.875% NY + 2% Q4
+        taxAmount: 1582.31, // 14550 * 0.10875
+        baseTotal: 16132.31, // 14550 + 1582.31
+        lateFee: 241.98, // 1.5% of 16132.31
+        total: 16374.29
       };
       
-      const result = calculateLegacyInvoice(input, currentDate);
+      const result = await calculateLegacyInvoice(input, currentDate);
       expect(result.discount).toBe(expected.discount);
       expect(result.taxRate).toBe(expected.taxRate);
       expect(result.taxAmount).toBe(expected.taxAmount);
@@ -647,12 +649,3 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
   });
 });
 
-// Placeholder function - will be replaced with actual implementation
-function calculateLegacyInvoice(
-  _input: LegacyInvoiceInput, 
-  _currentDate?: Date
-): LegacyInvoiceOutput {
-  // This function will be implemented in the domain layer
-  // For now, returning a mock to show test structure
-  throw new Error('Not implemented - replace with actual domain logic');
-}

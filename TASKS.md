@@ -133,12 +133,12 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
 
 ### 1.3 Application Services (0.5 days)
 
-- [ ] **1.3.1** Implement CreateInvoice use case
-  - [ ] Write failing test: `tests/unit/application/create-invoice.test.ts`
-  - [ ] Implement `src/application/use-cases/create-invoice.ts`
-  - [ ] Define repository interfaces (ports)
-  - [ ] Mock external dependencies in tests
-  - [ ] Re-enable and update `legacy-parity.test.ts` to verify feature parity
+- [x] **1.3.1** Implement CreateInvoice use case
+  - [x] Write failing test: `tests/unit/application/create-invoice.test.ts`
+  - [x] Implement `src/application/use-cases/create-invoice.ts`
+  - [x] Define repository interfaces (ports)
+  - [x] Mock external dependencies in tests
+  - [x] Re-enable and update `legacy-parity.test.ts` to verify feature parity
 
 - [ ] **1.3.2** Implement ProcessInvoice use case
   - [ ] Write failing test: `tests/unit/application/process-invoice.test.ts`

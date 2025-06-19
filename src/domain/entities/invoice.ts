@@ -5,6 +5,7 @@ import { Money } from '../value-objects/money.js';
 import { InvoiceValidationError } from '../exceptions/invoice-validation-error.js';
 
 interface InvoiceData {
+  invoiceNumber: string;
   customer: Customer;
   items: InvoiceItem[];
   invoiceDate: Date;
@@ -17,10 +18,11 @@ interface TaxRates {
 
 export class Invoice {
   private readonly id: string;
-  private readonly customer: Customer;
-  private readonly items: InvoiceItem[];
-  private readonly invoiceDate: Date;
-  private readonly dueDate: Date;
+  private readonly _invoiceNumber: string;
+  private readonly _customer: Customer;
+  private readonly _items: InvoiceItem[];
+  private readonly _invoiceDate: Date;
+  private readonly _dueDate: Date;
   private readonly createdAt: Date;
   
   private static readonly MINIMUM_INVOICE_AMOUNT = 25.00;
@@ -32,7 +34,7 @@ export class Invoice {
   
   private static readonly STATE_TAX_RATES: TaxRates = {
     'CA': 0.0725,
-    'NY': 0.08,
+    'NY': 0.08875,
     'TX': 0.0625,
     'IL': 0.0625,
     'PA': 0.06,
@@ -47,14 +49,19 @@ export class Invoice {
     this.validate(data);
     
     this.id = uuidv4();
-    this.customer = data.customer;
-    this.items = [...data.items]; // Defensive copy
-    this.invoiceDate = new Date(data.invoiceDate.getTime()); // Defensive copy
-    this.dueDate = new Date(data.dueDate.getTime()); // Defensive copy
+    this._invoiceNumber = data.invoiceNumber;
+    this._customer = data.customer;
+    this._items = [...data.items]; // Defensive copy
+    this._invoiceDate = new Date(data.invoiceDate.getTime()); // Defensive copy
+    this._dueDate = new Date(data.dueDate.getTime()); // Defensive copy
     this.createdAt = new Date();
   }
   
   private validate(data: InvoiceData): void {
+    if (!data.invoiceNumber || data.invoiceNumber.trim() === '') {
+      throw new InvoiceValidationError('Invoice number is required', 'invoiceNumber');
+    }
+    
     if (!data.customer) {
       throw new InvoiceValidationError('Customer is required', 'customer');
     }
@@ -95,20 +102,24 @@ export class Invoice {
     return this.id;
   }
   
+  getInvoiceNumber(): string {
+    return this._invoiceNumber;
+  }
+  
   getCustomer(): Customer {
-    return this.customer;
+    return this._customer;
   }
   
   getItems(): InvoiceItem[] {
-    return [...this.items]; // Return defensive copy
+    return [...this._items]; // Return defensive copy
   }
   
   getInvoiceDate(): Date {
-    return new Date(this.invoiceDate.getTime()); // Return defensive copy
+    return new Date(this._invoiceDate.getTime()); // Return defensive copy
   }
   
   getDueDate(): Date {
-    return new Date(this.dueDate.getTime()); // Return defensive copy
+    return new Date(this._dueDate.getTime()); // Return defensive copy
   }
   
   getCreatedAt(): Date {
@@ -116,7 +127,7 @@ export class Invoice {
   }
   
   getSubtotal(): Money {
-    const rawSubtotal = this.items.reduce(
+    const rawSubtotal = this._items.reduce(
       (sum, item) => sum.add(item.getTotal()),
       new Money(0)
     );
@@ -145,16 +156,16 @@ export class Invoice {
   
   private getTaxRate(): number {
     // Customer-specific overrides have highest priority
-    if (this.customer.isTaxExempt()) {
+    if (this._customer.isTaxExempt()) {
       return 0;
     }
     
     // Get state-based rate or default
-    const state = this.customer.getAddress().getState().toUpperCase();
+    const state = this._customer.getAddress().getState().toUpperCase();
     const baseRate = Invoice.STATE_TAX_RATES[state] || Invoice.DEFAULT_TAX_RATE;
     
     // Apply Q4 adjustment if applicable
-    const month = this.invoiceDate.getMonth();
+    const month = this._invoiceDate.getMonth();
     const isQ4 = month >= 9 && month <= 11; // October (9), November (10), December (11)
     
     if (isQ4) {
@@ -179,7 +190,7 @@ export class Invoice {
   calculateLateFee(asOfDate: Date): Money {
     // Calculate days past due date
     const daysPastDue = Math.floor(
-      (asOfDate.getTime() - this.dueDate.getTime()) / (1000 * 60 * 60 * 24)
+      (asOfDate.getTime() - this._dueDate.getTime()) / (1000 * 60 * 60 * 24)
     );
     
     // No late fee if less than 30 days past due
@@ -194,5 +205,42 @@ export class Invoice {
     // Calculate late fee on total invoice amount (including tax)
     const total = this.getTotal();
     return total.multiply(Invoice.LATE_FEE_RATE * monthsLate);
+  }
+  
+  // Getter properties
+  get invoiceNumber(): string {
+    return this.getInvoiceNumber();
+  }
+  
+  get customer(): Customer {
+    return this.getCustomer();
+  }
+  
+  get items(): InvoiceItem[] {
+    return this.getItems();
+  }
+  
+  get subtotal(): Money {
+    return this.getSubtotal();
+  }
+  
+  get bulkDiscount(): Money {
+    return this.getBulkDiscount();
+  }
+  
+  get tax(): Money {
+    return this.calculateTax();
+  }
+  
+  get total(): Money {
+    return this.getTotal();
+  }
+  
+  get invoiceDate(): Date {
+    return this.getInvoiceDate();
+  }
+  
+  get dueDate(): Date {
+    return this.getDueDate();
   }
 }

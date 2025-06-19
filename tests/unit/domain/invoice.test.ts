@@ -18,6 +18,7 @@ describe('Invoice Entity', () => {
   ];
 
   const validInvoiceData = {
+    invoiceNumber: 'INV-TEST-001',
     customer: validCustomer,
     items: validItems,
     invoiceDate: new Date('2024-01-15'),
@@ -37,8 +38,14 @@ describe('Invoice Entity', () => {
     });
 
     it('should generate a unique invoice ID', () => {
-      const invoice1 = new Invoice(validInvoiceData);
-      const invoice2 = new Invoice(validInvoiceData);
+      const invoice1 = new Invoice({
+        ...validInvoiceData,
+        invoiceNumber: 'INV-TEST-002'
+      });
+      const invoice2 = new Invoice({
+        ...validInvoiceData,
+        invoiceNumber: 'INV-TEST-003'
+      });
 
       expect(invoice1.getId()).not.toEqual(invoice2.getId());
     });

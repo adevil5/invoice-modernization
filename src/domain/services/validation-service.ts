@@ -175,7 +175,7 @@ export class ValidationService {
       errors.push(new BusinessRuleViolationError(
         'MINIMUM_INVOICE_AMOUNT',
         `Invoice amount is below minimum of $${ValidationService.MINIMUM_INVOICE_AMOUNT.toFixed(2)}`,
-        'warning',
+        'error',
         { subtotal: subtotal.getAmount(), minimum: ValidationService.MINIMUM_INVOICE_AMOUNT }
       ));
     }

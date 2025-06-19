@@ -352,7 +352,7 @@ describe('ValidationService', () => {
       expect(errors).toHaveLength(1);
       expect(errors[0]).toBeInstanceOf(BusinessRuleViolationError);
       expect((errors[0] as BusinessRuleViolationError).rule).toBe('MINIMUM_INVOICE_AMOUNT');
-      expect((errors[0] as BusinessRuleViolationError).severity).toBe('warning');
+      expect((errors[0] as BusinessRuleViolationError).severity).toBe('error');
       expect(errors[0].message).toContain('Invoice amount is below minimum of $25.00');
     });
 
