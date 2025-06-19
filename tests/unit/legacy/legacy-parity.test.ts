@@ -364,7 +364,7 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
       };
       
       const currentDate = new Date('2024-03-16'); // 31 days after due date
-      const baseTotal = 1072.50; // 1000 + 72.50 tax
+      // const baseTotal = 1072.50; // 1000 + 72.50 tax
       const expected = {
         lateFee: 16.09, // 1.5% of 1072.50
         total: 1088.59 // 1072.50 + 16.09
@@ -390,7 +390,7 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
       };
       
       const currentDate = new Date('2024-05-16'); // 91 days after due date (3 months)
-      const baseTotal = 1072.50;
+      // const baseTotal = 1072.50;
       const expected = {
         lateFee: 48.26, // 1.5% * 3 months = 4.5% of 1072.50
         total: 1120.76
@@ -649,8 +649,8 @@ describe('Legacy Invoice Processing - Parity Tests', () => {
 
 // Placeholder function - will be replaced with actual implementation
 function calculateLegacyInvoice(
-  input: LegacyInvoiceInput, 
-  currentDate?: Date
+  _input: LegacyInvoiceInput, 
+  _currentDate?: Date
 ): LegacyInvoiceOutput {
   // This function will be implemented in the domain layer
   // For now, returning a mock to show test structure

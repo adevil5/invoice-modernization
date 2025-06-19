@@ -60,7 +60,7 @@ describe('Legacy Error Log Edge Cases', () => {
         { name: 'ISO-8859-1', bytes: [0xE9] } // é in ISO-8859-1
       ];
 
-      encodings.forEach(({ name, bytes }) => {
+      encodings.forEach(({ bytes }) => {
         const buffer = Buffer.from(bytes);
         expect(() => detectEncoding(buffer)).not.toThrow();
       });
@@ -131,7 +131,7 @@ describe('Legacy Error Log Edge Cases', () => {
     test('should handle "No space left on device" gracefully', () => {
       // Legacy error: PDF generation failed with ENOSPC
       const mockWriteFile = jest.fn().mockImplementation(() => {
-        const error = new Error('ENOSPC: no space left on device');
+        const error = new Error('ENOSPC: no space left on device') as Error & { code: string };
         error.code = 'ENOSPC';
         throw error;
       });
@@ -228,16 +228,17 @@ describe('Legacy Error Log Edge Cases', () => {
   });
 
   describe('Network and Mount Issues', () => {
-    test('should handle network share mount failures', () => {
+    test('should handle network share mount failures', async () => {
       // Legacy: Script hangs forever if mount is down
-      const mockCheckMount = jest.fn().mockResolvedValue(false);
+      // const mockCheckMount = jest.fn().mockResolvedValue(false);
       
-      const result = checkNetworkShareWithTimeout('/mnt/finance_share', 5000);
-      expect(result).rejects.toThrow('Network share not accessible');
+      await expect(
+        checkNetworkShareWithTimeout('/mnt/finance_share', 5000)
+      ).rejects.toThrow('Network share not accessible');
     });
 
     test('should implement timeout for file operations', async () => {
-      const slowOperation = () => new Promise(resolve => {
+      const slowOperation = (): Promise<void> => new Promise(resolve => {
         setTimeout(resolve, 10000); // 10 second operation
       });
 
@@ -324,47 +325,47 @@ describe('Legacy Error Log Edge Cases', () => {
 });
 
 // Placeholder functions - will be implemented in actual domain/infrastructure layers
-function validateAmount(amount: string): number {
+function validateAmount(_amount: string): number {
   throw new Error('Not implemented');
 }
 
-function parseAmount(amount: string): number {
+function parseAmount(_amount: string): number {
   throw new Error('Not implemented');
 }
 
-function parseCSVWithEncoding(buffer: Buffer): any {
+function parseCSVWithEncoding(_buffer: Buffer): unknown {
   throw new Error('Not implemented');
 }
 
-function detectEncoding(buffer: Buffer): string {
+function detectEncoding(_buffer: Buffer): string {
   throw new Error('Not implemented');
 }
 
-function parseDateSafely(date: string): { success: boolean; error?: string; date?: Date } {
+function parseDateSafely(_date: string): { success: boolean; error?: string; date?: Date } {
   throw new Error('Not implemented');
 }
 
-function calculateDueDate(invoice: any): { error?: string; date?: string } {
+function calculateDueDate(_invoice: any): { error?: string; date?: string } {
   throw new Error('Not implemented');
 }
 
-function addDaysToDate(date: string, days: number): string {
+function addDaysToDate(_date: string, _days: number): string {
   throw new Error('Not implemented');
 }
 
-function generatePDFSafely(filename: string, content: string, writeFile: any): { success: boolean; error?: string; suggestion?: string } {
+function generatePDFSafely(_filename: string, _content: string, _writeFile: any): { success: boolean; error?: string; suggestion?: string } {
   throw new Error('Not implemented');
 }
 
-async function checkDiskSpace(path: string): Promise<number> {
+function checkDiskSpace(_path: string): Promise<number> {
   throw new Error('Not implemented');
 }
 
-function parseCSVRowSafely(row: string[]): { success: boolean; error?: string; data?: any } {
+function parseCSVRowSafely(_row: string[]): { success: boolean; error?: string; data?: any } {
   throw new Error('Not implemented');
 }
 
-function parseItemsSafely(items: any): { success: boolean; items: any[] } {
+function parseItemsSafely(_items: any): { success: boolean; items: any[] } {
   throw new Error('Not implemented');
 }
 
@@ -372,30 +373,30 @@ function createStreamProcessor(): { canHandle: (size: number) => boolean; strate
   throw new Error('Not implemented');
 }
 
-function calculateBatches(total: number, size: number): Array<{ start: number; end: number }> {
+function calculateBatches(_total: number, _size: number): Array<{ start: number; end: number }> {
   throw new Error('Not implemented');
 }
 
-function checkNetworkShareWithTimeout(path: string, timeout: number): Promise<boolean> {
+function checkNetworkShareWithTimeout(_path: string, _timeout: number): Promise<boolean> {
   throw new Error('Not implemented');
 }
 
-function withTimeout<T>(promise: Promise<T>, timeout: number): Promise<T> {
+function withTimeout<T>(_promise: Promise<T>, _timeout: number): Promise<T> {
   throw new Error('Not implemented');
 }
 
-function sanitizeForPDF(text: string): string {
+function sanitizeForPDF(_text: string): string {
   throw new Error('Not implemented');
 }
 
-function generatePDFWithName(name: string): void {
+function generatePDFWithName(_name: string): void {
   throw new Error('Not implemented');
 }
 
-function generateUniqueFilename(invoice: any): string {
+function generateUniqueFilename(_invoice: any): string {
   throw new Error('Not implemented');
 }
 
-function improveErrorMessage(error: string): string {
+function improveErrorMessage(_error: string): string {
   throw new Error('Not implemented');
 }
