@@ -1,0 +1,36 @@
+# Production environment configuration
+aws_region     = "us-east-1"
+aws_profile    = "invoice-prod"
+
+# Lambda configuration
+lambda_runtime      = "nodejs22.x"
+lambda_architecture = "arm64"
+
+# DynamoDB configuration (prod uses provisioned billing)
+dynamodb_read_capacity        = 25
+dynamodb_write_capacity       = 25
+enable_point_in_time_recovery = true
+
+# API Gateway
+api_stage_name           = "v1"
+api_throttle_burst_limit = 500
+api_throttle_rate_limit  = 250
+
+# Monitoring
+enable_xray_tracing = true
+log_retention_days  = 365
+alarm_email        = "prod-alerts@example.com"
+
+# Features
+enable_dead_letter_queue = true
+enable_api_caching      = true
+
+# Security
+allowed_cors_origins = ["https://app.example.com", "https://www.example.com"]
+
+# Tags
+additional_tags = {
+  CostCenter = "production"
+  Owner      = "platform-team"
+  Compliance = "SOC2"
+}

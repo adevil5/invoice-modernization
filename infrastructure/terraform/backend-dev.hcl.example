@@ -1,0 +1,9 @@
+# Backend configuration for dev environment
+# Copy this file to backend-dev.hcl and update with your values
+
+bucket         = "your-terraform-state-bucket-name"
+key            = "invoice-modernization/terraform.tfstate"
+region         = "us-east-1"
+encrypt        = true
+dynamodb_table = "terraform-state-lock"
+profile        = "invoice"

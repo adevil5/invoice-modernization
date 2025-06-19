@@ -24,7 +24,6 @@ terraform workspace list
 
 # Create new workspace
 terraform workspace new dev
-terraform workspace new staging
 terraform workspace new prod
 
 # Switch workspace
@@ -237,9 +236,8 @@ aws lambda update-function-code \
 ### Resource Tagging
 
 All resources tagged with:
-- `Environment`: dev/staging/prod
+- `Environment`: dev/prod
 - `Project`: invoice-modernization
-- `CostCenter`: engineering
 - `ManagedBy`: terraform
 
 ### Cost Optimization

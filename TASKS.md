@@ -156,16 +156,16 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
 
 ### 2.1 AWS Infrastructure Setup (0.5 days)
 
-- [ ] **2.1.1** Initialize Terraform configuration
+- [x] **2.1.1** Initialize Terraform configuration
 
   ```bash
   cd infrastructure/terraform
   terraform init
   ```
 
-  - [ ] Create `main.tf`, `variables.tf`, `outputs.tf`
-  - [ ] Setup backend configuration for state management
-  - [ ] Create workspace for dev environment: `terraform workspace new dev`
+  - [x] Create `main.tf`, `variables.tf`, `outputs.tf`
+  - [x] Setup backend configuration for state management
+  - [x] Create workspace for dev environment: `terraform workspace new dev`
 
 - [ ] **2.1.2** Define DynamoDB infrastructure
   - [ ] Write Terraform module: `modules/dynamodb/main.tf`
