@@ -113,11 +113,11 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
 
 ### 1.2 Domain Models (0.5 days)
 
-- [ ] **1.2.1** Define Invoice domain entity
-  - [ ] Write failing test: `tests/unit/domain/invoice.test.ts`
-  - [ ] Implement `src/domain/entities/invoice.ts` with value objects
-  - [ ] Add validation rules matching legacy constraints
-  - [ ] Ensure immutability and encapsulation
+- [x] **1.2.1** Define Invoice domain entity
+  - [x] Write failing test: `tests/unit/domain/invoice.test.ts`
+  - [x] Implement `src/domain/entities/invoice.ts` with value objects
+  - [x] Add validation rules matching legacy constraints
+  - [x] Ensure immutability and encapsulation
 
 - [ ] **1.2.2** Define Tax calculation domain
   - [ ] Write failing test: `tests/unit/domain/tax-calculator.test.ts`
@@ -138,6 +138,7 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
   - [ ] Implement `src/application/use-cases/create-invoice.ts`
   - [ ] Define repository interfaces (ports)
   - [ ] Mock external dependencies in tests
+  - [ ] Re-enable and update `legacy-parity.test.ts` to verify feature parity
 
 - [ ] **1.3.2** Implement ProcessInvoice use case
   - [ ] Write failing test: `tests/unit/application/process-invoice.test.ts`
@@ -204,6 +205,7 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
   - [ ] Implement `src/infrastructure/repositories/s3-document-repository.ts`
   - [ ] Add presigned URL generation
   - [ ] Handle large file uploads with multipart
+  - [ ] Re-enable network timeout tests in `error-edge-cases.test.ts`
 
 ### 2.3 External Service Implementations (0.5 days)
 
@@ -214,6 +216,7 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
   - [ ] Implement `src/infrastructure/services/pdf-generator.ts`
   - [ ] Create HTML templates for invoices
   - [ ] Handle local vs Lambda execution paths
+  - [ ] Re-enable PDF-related tests in `error-edge-cases.test.ts`
 
 - [ ] **2.3.2** Implement event publisher
   - [ ] Write test: `tests/unit/infrastructure/event-publisher.test.ts`
@@ -274,6 +277,7 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
   - [ ] Implement `src/interfaces/events/csv-upload-handler.ts`
   - [ ] Add CSV parsing with validation
   - [ ] Support batch invoice creation
+  - [ ] Re-enable CSV parsing tests in `error-edge-cases.test.ts`
 
 ### 3.3 API Documentation and Client SDK (0.25 days)
 
