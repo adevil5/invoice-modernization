@@ -71,13 +71,12 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
 
 ### 0.3 CI/CD Pipeline Foundation (0.5 days)
 
-- [ ] **0.3.1** Initialize GitHub repository
-  - [ ] Create `.gitignore` using `npx gitignore node`
-  - [ ] Add custom ignores: `.env*`, `*.local`, `dist/`, `coverage/`
-  - [ ] Create initial commit with conventional commit message
-  - [ ] Setup branch protection rules for main branch
+- [x] **0.3.1** Initialize GitHub repository
+  - [x] Create `.gitignore` using `npx gitignore node`
+  - [x] Add custom ignores: `.env*`, `*.local`, `dist/`, `coverage/`
+  - [x] Create initial commit with conventional commit message
 
-- [ ] **0.3.2** Create GitHub Actions workflow skeleton
+- [x] **0.3.2** Create GitHub Actions workflow skeleton
 
   ```yaml
   # .github/workflows/main.yml
@@ -85,10 +84,10 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
   on: [push, pull_request]
   ```
 
-  - [ ] Add job for linting and type checking
-  - [ ] Add job for unit tests with coverage reporting
-  - [ ] Add job for building artifacts
-  - [ ] Configure job dependencies and matrix strategy
+  - [x] Add job for linting and type checking
+  - [x] Add job for unit tests with coverage reporting
+  - [x] Add job for building artifacts
+  - [x] Configure job dependencies and matrix strategy
 
 - [ ] **0.3.3** Setup semantic versioning and releases
   - [ ] Install semantic-release: `npm i -D semantic-release @semantic-release/git @semantic-release/changelog`
