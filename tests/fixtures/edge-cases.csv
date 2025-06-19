@@ -1,0 +1,10 @@
+customer_id,customer_name,address,city,state,zip,amount,invoice_date,due_date,items
+CUST001,Tax Exempt Nonprofit,789 Charity Way,New York,NY,10001,25000.00,10/15/2024,11/14/2024,Annual Gala:1:25000.00
+CUST332,International Café,456 Ümlaut St,Los Angeles,California,90001,999.99,Jan 10, 2025,Feb 10, 2025,Espresso:100:9.99|Croissant:50:0.02
+CUST998,Zero Invoice Test,123 Empty Ave,Houston,texas,77001,0.00,2025-01-01,2025-01-31,Free Service:1:0.00
+CUST123,Below Minimum Corp,456 Small St,Miami,FL,33101,10.00,12-25-2024,01-25-2025,Tiny Item:1:10.00
+CUST456,Negative Amount Inc,789 Credit Ln,Chicago,IL,60601,-500.00,01/01/2025,01/31/2025,Refund:-1:500.00
+CUST789,Decimal Quantity Co,321 Hours Rd,Phoenix,AZ,85001,1500.00,01/10/2025,02/10/2025,Consulting Hours:1.5:1000.00
+CUST111,Comma in Items LLC,555 Parse St,Boston,MA,02101,3000.00,01/15/2025,02/15/2025,Item, With Comma:10:300.00
+CUST222,Multiple Same Day,999 Duplicate Dr,Portland,OR,97201,5000.00,01/20/2025,02/20/2025,Order 1:1:5000.00
+CUST222,Multiple Same Day,999 Duplicate Dr,Portland,OR,97201,7500.00,01/20/2025,02/20/2025,Order 2:1:7500.00

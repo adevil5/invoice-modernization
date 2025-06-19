@@ -99,17 +99,17 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
 
 ### 1.1 Legacy Code Analysis (0.5 days)
 
-- [ ] **1.1.1** Document legacy business rules
-  - [ ] Create `docs/legacy-analysis.md`
-  - [ ] Extract tax calculation rules into decision tables
-  - [ ] Document CSV format variations and edge cases
-  - [ ] Identify hardcoded values and magic numbers
+- [x] **1.1.1** Document legacy business rules
+  - [x] Create `docs/legacy-analysis.md`
+  - [x] Extract tax calculation rules into decision tables
+  - [x] Document CSV format variations and edge cases
+  - [x] Identify hardcoded values and magic numbers
 
-- [ ] **1.1.2** Create test cases from legacy behavior
-  - [ ] Write `tests/legacy-parity.test.ts` with known input/output pairs
-  - [ ] Document undocumented business rules discovered
-  - [ ] Create fixture files from production CSV samples
-  - [ ] Test edge cases found in legacy error logs
+- [x] **1.1.2** Create test cases from legacy behavior
+  - [x] Write `tests/legacy-parity.test.ts` with known input/output pairs
+  - [x] Document undocumented business rules discovered
+  - [x] Create fixture files from production CSV samples
+  - [x] Test edge cases found in legacy error logs
 
 ### 1.2 Domain Models (0.5 days)
 

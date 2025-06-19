@@ -1,0 +1,133 @@
+{
+  "standard_outputs": {
+    "CUST001_nonprofit": {
+      "input": {
+        "customer_id": "CUST001",
+        "amount": "5000.00",
+        "state": "MA",
+        "invoice_date": "01/15/2025"
+      },
+      "expected": {
+        "subtotal": 5000.00,
+        "discount": 0,
+        "tax_rate": 0,
+        "tax_amount": 0,
+        "total": 5000.00,
+        "pdf_filename": "CUST001_2025-01-15_5000.00.pdf"
+      }
+    },
+    "CUST447_bulk_discount": {
+      "input": {
+        "customer_id": "CUST447",
+        "amount": "15750.00",
+        "state": "TX",
+        "invoice_date": "01/10/2025"
+      },
+      "expected": {
+        "subtotal": 15750.00,
+        "discount": 472.50,
+        "taxable_amount": 15277.50,
+        "tax_rate": 0.0625,
+        "tax_amount": 954.84,
+        "total": 16232.34,
+        "pdf_filename": "CUST447_2025-01-10_16232.34.pdf"
+      }
+    },
+    "CUST892_q4_tax": {
+      "input": {
+        "customer_id": "CUST892",
+        "amount": "8500.00",
+        "state": "CA",
+        "invoice_date": "12/20/2024"
+      },
+      "expected": {
+        "subtotal": 8500.00,
+        "discount": 0,
+        "tax_rate": 0.0925,
+        "tax_amount": 786.25,
+        "total": 9286.25,
+        "pdf_filename": "CUST892_2024-12-20_9286.25.pdf"
+      }
+    }
+  },
+  "late_fee_calculations": {
+    "one_month_late": {
+      "base_total": 1072.50,
+      "days_late": 31,
+      "months_late": 1,
+      "late_fee_rate": 0.015,
+      "late_fee": 16.09,
+      "total_with_late_fee": 1088.59
+    },
+    "three_months_late": {
+      "base_total": 5400.00,
+      "days_late": 91,
+      "months_late": 3,
+      "late_fee_rate": 0.045,
+      "late_fee": 243.00,
+      "total_with_late_fee": 5643.00
+    }
+  },
+  "edge_case_behaviors": {
+    "below_minimum": {
+      "input_amount": 10.00,
+      "adjusted_amount": 25.00,
+      "note": "Amounts below $25 are silently adjusted to $25"
+    },
+    "negative_amount": {
+      "input_amount": -500.00,
+      "expected_behavior": "Should fail validation in new system",
+      "legacy_behavior": "Causes script crash"
+    },
+    "zero_invoice": {
+      "input_amount": 0.00,
+      "expected_behavior": "Should be rejected",
+      "legacy_behavior": "Processes and generates PDF"
+    },
+    "duplicate_same_day": {
+      "scenario": "CUST222 with two invoices on 01/20/2025",
+      "legacy_behavior": "Second PDF overwrites first",
+      "expected_behavior": "Both should be processed with unique identifiers"
+    }
+  },
+  "state_variations": {
+    "lowercase": {
+      "input": "ca",
+      "normalized": "CA",
+      "tax_rate": 0.0725
+    },
+    "full_name": {
+      "input": "California",
+      "normalized": "CA",
+      "tax_rate": 0.0725
+    },
+    "unknown_state": {
+      "input": "XX",
+      "normalized": "XX",
+      "tax_rate": 0.05
+    }
+  },
+  "date_parsing_results": {
+    "MM/DD/YYYY": {
+      "input": "01/15/2024",
+      "parsed": "2024-01-15"
+    },
+    "YYYY-MM-DD": {
+      "input": "2024-01-15",
+      "parsed": "2024-01-15"
+    },
+    "MM-DD-YYYY": {
+      "input": "01-15-2024",
+      "parsed": "2024-01-15"
+    },
+    "M/D/YY": {
+      "input": "1/5/25",
+      "parsed": "2025-01-05"
+    },
+    "text_format": {
+      "input": "Jan 15, 2024",
+      "expected_behavior": "Should fail in legacy system",
+      "new_behavior": "Could support with proper parsing"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+customer_id,customer_name,address,city,state,zip,amount,invoice_date,due_date,items
+CUST501,US Standard Format,123 Date St,Boston,MA,02101,1000.00,01/15/2024,02/14/2024,Service:1:1000.00
+CUST502,ISO Format User,456 ISO Ave,Seattle,WA,98101,2000.00,2024-01-15,2024-02-14,Product:1:2000.00
+CUST503,Dash Format Corp,789 Dash Dr,Denver,CO,80201,3000.00,01-15-2024,02-14-2024,License:1:3000.00
+CUST504,Short Year Inc,321 Short Yr,Austin,TX,78701,4000.00,1/5/25,2/5/25,Widget:40:100.00
+CUST505,EU Format GmbH,555 European St,Portland,OR,97201,5000.00,15/01/2024,14/02/2024,Consulting:50:100.00
+CUST506,Text Month LLC,888 January Rd,Miami,FL,33101,6000.00,Jan 15, 2024,Feb 14, 2024,Support:60:100.00

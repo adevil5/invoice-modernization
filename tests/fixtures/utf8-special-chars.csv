@@ -1,0 +1,6 @@
+customer_id,customer_name,address,city,state,zip,amount,invoice_date,due_date,items
+CUST701,Café Français,123 Rue de la Paix,San Francisco,CA,94105,1500.00,01/15/2025,02/15/2025,Café:100:15.00
+CUST702,Müller GmbH,456 Königstraße,New York,NY,10001,2500.00,01/10/2025,02/10/2025,Bücher:25:100.00
+CUST703,José García S.A.,789 Calle España,Miami,FL,33101,3500.00,01/20/2025,02/20/2025,Señor's Special:35:100.00
+CUST704,北京公司,321 中文路,Los Angeles,CA,90001,4500.00,01/25/2025,02/25/2025,服务:45:100.00
+CUST705,Москва ООО,555 Красная площадь,Seattle,WA,98101,5500.00,01/30/2025,03/01/2025,Услуги:55:100.00

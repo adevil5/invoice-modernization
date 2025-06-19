@@ -1,0 +1,5 @@
+customer_id,customer_name,address,city,state,zip,amount,invoice_date,due_date,items
+CUST777,Messy Data Corp,999 Error St,Chicago,il,60601,24.99,1/5/25,2/5/25,
+CUST666,  Spaces Everywhere  ,  123 Space Rd  ,Denver,CO  ,80202,10500,01/01/2025,01/31/2025,Item One:1:10500
+,Missing ID Company,456 No ID Lane,Miami,FL,33101,500.00,01/10/2025,02/10/2025,Service:1:500.00
+CUST444,Normal Co,789 Fine St,Portland,OR,97201,not_a_number,01/15/2025,02/15/2025,Good:1:100.00

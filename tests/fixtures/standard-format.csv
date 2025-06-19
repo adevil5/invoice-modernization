@@ -1,0 +1,5 @@
+customer_id,customer_name,address,city,state,zip,amount,invoice_date,due_date,items
+CUST001,Nonprofit Foundation,123 Charity Lane,Boston,MA,02101,5000.00,01/15/2025,02/15/2025,Consulting:40:125.00
+CUST447,Tech Startup Inc,456 Innovation Blvd,Austin,TX,78701,15750.00,01/10/2025,02/10/2025,Development:100:150.00|Support:5:75.00
+CUST892,Global Enterprises,789 Corporate Dr,San Francisco,CA,94105,8500.00,12/20/2024,01/20/2025,License:1:8500.00
+CUST555,Small Business LLC,321 Main St,Seattle,WA,98101,2500.00,01/05/2025,02/05/2025,Widget A:10:200.00|Widget B:5:100.00

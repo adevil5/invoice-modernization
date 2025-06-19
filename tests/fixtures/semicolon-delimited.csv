@@ -1,0 +1,3 @@
+customer_id;customer_name;address;city;state;zip;amount;invoice_date;due_date;items
+CUST999;European Client GmbH;Hauptstraße 10;Munich;BY;80331;12000.00;2025-01-12;2025-02-12;Service:1:12000.00
+CUST888;Another Company;55 Fifth Ave;New York;NY;10003;3200.00;01-08-2025;02-08-2025;Product X:20:160.00
