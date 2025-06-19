@@ -314,14 +314,16 @@ export class ValidationService {
    - Enforced at invoice creation
    - Cannot be bypassed
 
-2. **Bulk Discount**: 3% for 100+ items
-   - Automatically applied
+2. **Bulk Discount**: 3% for 100+ items or $10,000+ subtotal
+   - Automatically applied based on quantity OR amount
    - Shown as separate line item
+   - Only one bulk discount applies (not cumulative)
 
 3. **Tax Calculation**:
    - State rate (with defaults)
    - Q4 adjustment (+2% Oct-Dec)
    - Customer override (takes precedence)
+   - Tax-exempt customers (e.g., CUST001) pay no tax
 
 4. **Invoice Status Transitions**:
    ```

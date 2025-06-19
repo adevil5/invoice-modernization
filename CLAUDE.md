@@ -55,6 +55,8 @@ npm test
 - Strategy Pattern for tax calculation
 - Value Objects for data integrity
 - Comprehensive error hierarchy
+- Port-Adapter pattern for infrastructure abstraction
+- Fire-and-forget event publishing for resilience
 
 ### Event Flow
 1. CSV upload → S3 → Lambda
@@ -128,6 +130,12 @@ For detailed information, see:
   - Business rule details
   - Legacy compatibility
 
+- **Application Patterns**: [`docs/application-patterns.md`](docs/application-patterns.md)
+  - Port-adapter implementations
+  - Use case patterns
+  - Event publishing strategies
+  - Testing approaches
+
 - **Legacy Analysis**: [`docs/legacy-analysis.md`](docs/legacy-analysis.md)
   - Original system behavior
   - Migration considerations
@@ -147,3 +155,6 @@ For detailed information, see:
 - **Legacy Format**: CSV must match Python 2.7 output exactly
 - **Tax Logic**: State rates with Q4 adjustment and customer overrides
 - **Validation**: Collect all errors before throwing (no fail-fast)
+- **Date Handling**: Parse dates at noon local time to avoid timezone issues
+- **Event Publishing**: Failures are logged but don't fail the main operation
+- **Correlation IDs**: Use optional spread pattern for proper TypeScript typing
