@@ -119,11 +119,11 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
   - [x] Add validation rules matching legacy constraints
   - [x] Ensure immutability and encapsulation
 
-- [ ] **1.2.2** Define Tax calculation domain
-  - [ ] Write failing test: `tests/unit/domain/tax-calculator.test.ts`
-  - [ ] Implement `src/domain/services/tax-calculator.ts`
-  - [ ] Create `src/domain/value-objects/tax-rule.ts`
-  - [ ] Implement strategy pattern for different tax types
+- [x] **1.2.2** Define Tax calculation domain
+  - [x] Write failing test: `tests/unit/domain/tax-calculator.test.ts`
+  - [x] Implement `src/domain/services/tax-calculator.ts`
+  - [x] Create `src/domain/value-objects/tax-rule.ts`
+  - [x] Implement strategy pattern for different tax types
 
 - [ ] **1.2.3** Define validation rules
   - [ ] Write failing test: `tests/unit/domain/validation.test.ts`

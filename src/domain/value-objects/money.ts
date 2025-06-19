@@ -9,8 +9,16 @@ export class Money {
     this.amount = Math.round(amount * 100) / 100;
   }
   
+  static fromCents(cents: number): Money {
+    return new Money(cents / 100);
+  }
+  
   getAmount(): number {
     return this.amount;
+  }
+  
+  toCents(): number {
+    return Math.round(this.amount * 100);
   }
   
   add(other: Money): Money {
