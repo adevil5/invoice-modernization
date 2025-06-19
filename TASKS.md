@@ -167,11 +167,11 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
   - [x] Setup backend configuration for state management
   - [x] Create workspace for dev environment: `terraform workspace new dev`
 
-- [ ] **2.1.2** Define DynamoDB infrastructure
-  - [ ] Write Terraform module: `modules/dynamodb/main.tf`
-  - [ ] Configure table with GSI for queries
-  - [ ] Setup auto-scaling policies
-  - [ ] Enable point-in-time recovery
+- [x] **2.1.2** Define DynamoDB infrastructure
+  - [x] Write Terraform module: `modules/dynamodb/main.tf`
+  - [x] Configure table with GSI for queries
+  - [x] Setup auto-scaling policies
+  - [x] Enable point-in-time recovery
 
 - [ ] **2.1.3** Define Lambda infrastructure
   - [ ] Write Terraform module: `modules/lambda/main.tf`

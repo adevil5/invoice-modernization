@@ -139,6 +139,25 @@ resource "aws_s3_bucket_public_access_block" "invoices" {
   restrict_public_buckets = true
 }
 
+# DynamoDB table for invoices
+module "invoice_dynamodb" {
+  source = "./modules/dynamodb"
+
+  table_name                    = "${local.project}-invoices-${local.environment}"
+  environment                   = local.environment
+  billing_mode                  = local.current_env_config.dynamodb_billing_mode
+  enable_point_in_time_recovery = true
+  enable_streams                = true
+  
+  # Auto-scaling configuration (only used in PROVISIONED mode)
+  autoscale_read_min_capacity  = var.dynamodb_autoscale_read_min
+  autoscale_read_max_capacity  = var.dynamodb_autoscale_read_max
+  autoscale_write_min_capacity = var.dynamodb_autoscale_write_min
+  autoscale_write_max_capacity = var.dynamodb_autoscale_write_max
+  
+  common_tags = local.common_tags
+}
+
 # CloudWatch log groups
 resource "aws_cloudwatch_log_group" "lambda_logs" {
   name              = "/aws/lambda/${local.project}-${local.environment}"

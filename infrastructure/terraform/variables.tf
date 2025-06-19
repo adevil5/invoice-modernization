@@ -58,6 +58,30 @@ variable "enable_point_in_time_recovery" {
   default     = true
 }
 
+variable "dynamodb_autoscale_read_min" {
+  description = "Minimum read capacity for DynamoDB auto-scaling"
+  type        = number
+  default     = 5
+}
+
+variable "dynamodb_autoscale_read_max" {
+  description = "Maximum read capacity for DynamoDB auto-scaling"
+  type        = number
+  default     = 100
+}
+
+variable "dynamodb_autoscale_write_min" {
+  description = "Minimum write capacity for DynamoDB auto-scaling"
+  type        = number
+  default     = 5
+}
+
+variable "dynamodb_autoscale_write_max" {
+  description = "Maximum write capacity for DynamoDB auto-scaling"
+  type        = number
+  default     = 100
+}
+
 # API Gateway configuration
 variable "api_stage_name" {
   description = "API Gateway stage name"

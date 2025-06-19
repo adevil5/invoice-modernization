@@ -17,6 +17,18 @@ output "invoices_bucket" {
   }
 }
 
+# DynamoDB Outputs
+output "dynamodb_table" {
+  description = "DynamoDB table for invoices"
+  value = {
+    name         = module.invoice_dynamodb.table_name
+    arn          = module.invoice_dynamodb.table_arn
+    stream_arn   = module.invoice_dynamodb.table_stream_arn
+    billing_mode = module.invoice_dynamodb.table_billing_mode
+    gsi_names    = module.invoice_dynamodb.gsi_names
+  }
+}
+
 # CloudWatch Outputs
 output "cloudwatch_log_group" {
   description = "CloudWatch log group for Lambda functions"
