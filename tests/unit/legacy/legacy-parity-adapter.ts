@@ -45,74 +45,83 @@ const mockEventPublisher: EventPublisher = {
  */
 // Map full state names to state codes
 const STATE_NAME_MAP: Record<string, string> = {
-  'california': 'CA',
+  california: 'CA',
   'new york': 'NY',
-  'texas': 'TX',
-  'illinois': 'IL',
-  'pennsylvania': 'PA',
-  'nevada': 'NV',
-  'washington': 'WA',
-  'florida': 'FL',
-  'ohio': 'OH',
-  'arizona': 'AZ'
+  texas: 'TX',
+  illinois: 'IL',
+  pennsylvania: 'PA',
+  nevada: 'NV',
+  washington: 'WA',
+  florida: 'FL',
+  ohio: 'OH',
+  arizona: 'AZ',
 };
 
-export async function calculateLegacyInvoice(input: LegacyInvoiceInput, currentDate?: Date): Promise<LegacyInvoiceOutput> {
+export async function calculateLegacyInvoice(
+  input: LegacyInvoiceInput,
+  currentDate?: Date,
+): Promise<LegacyInvoiceOutput> {
   const useCase = new CreateInvoiceUseCase(mockInvoiceRepository, mockEventPublisher);
-  
+
   // Parse various date formats to ISO format (YYYY-MM-DD)
   const parseLegacyDate = (dateStr: string): string => {
     // Already in ISO format
     if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
       return dateStr;
     }
-    
+
     // MM/DD/YYYY format
     if (dateStr.includes('/')) {
       const [month, day, year] = dateStr.split('/');
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      return `${year}-${month?.padStart(2, '0')}-${day?.padStart(2, '0')}`;
     }
-    
+
     // MM-DD-YYYY format
     if (dateStr.match(/^\d{2}-\d{2}-\d{4}$/)) {
       const [month, day, year] = dateStr.split('-');
       return `${year}-${month}-${day}`;
     }
-    
+
     throw new Error(`Unsupported date format: ${dateStr}`);
   };
-  
+
   // Parse legacy items format "Description:Quantity:UnitPrice"
-  const parseItems = (itemsStr: string): { description: string; quantity: number; unitPrice: number }[] => {
+  const parseItems = (
+    itemsStr: string,
+  ): { description: string; quantity: number; unitPrice: number }[] => {
     const parts = itemsStr.split(':');
     if (parts.length === 3) {
-      return [{
-        description: parts[0],
-        quantity: parseInt(parts[1], 10),
-        unitPrice: parseFloat(parts[2])
-      }];
+      return [
+        {
+          description: parts[0] ?? '',
+          quantity: parseInt(parts[1] ?? '', 10),
+          unitPrice: parseFloat(parts[2] ?? ''),
+        },
+      ];
     }
     // Handle other formats if needed
-    return [{
-      description: itemsStr,
-      quantity: 1,
-      unitPrice: parseFloat(input.amount)
-    }];
+    return [
+      {
+        description: itemsStr,
+        quantity: 1,
+        unitPrice: parseFloat(input.amount),
+      },
+    ];
   };
-  
+
   // Normalize state - handle full names and lowercase
   const normalizeState = (state: string): string => {
     const stateLower = state.toLowerCase().trim();
-    
+
     // Check if it's a full state name
     if (STATE_NAME_MAP[stateLower]) {
       return STATE_NAME_MAP[stateLower];
     }
-    
+
     // Otherwise assume it's a state code and uppercase it
     return state.toUpperCase().trim();
   };
-  
+
   const createInvoiceDto: CreateInvoiceDto = {
     invoiceNumber: `INV-${Date.now()}`, // Generate unique invoice number
     customerId: input.customer_id,
@@ -127,23 +136,22 @@ export async function calculateLegacyInvoice(input: LegacyInvoiceInput, currentD
     dueDate: parseLegacyDate(input.due_date),
     items: parseItems(input.items),
   };
-  
+
   try {
     const invoice = await useCase.execute(createInvoiceDto);
-    
-    
+
     // Calculate tax rate from tax amount and subtotal
     const subtotalAfterDiscount = invoice.subtotal.getAmount() - invoice.bulkDiscount.getAmount();
     const taxRate = subtotalAfterDiscount > 0 ? invoice.tax.getAmount() / subtotalAfterDiscount : 0;
-    
+
     // Calculate late fee if currentDate is provided
     const lateFee = currentDate ? invoice.calculateLateFee(currentDate).getAmount() : 0;
     const total = Math.round((invoice.total.getAmount() + lateFee) * 100) / 100; // Round to 2 decimal places
-    
+
     // Generate PDF filename in legacy format: CUSTOMERID_YYYY-MM-DD_TOTAL.pdf
     const invoiceDateStr = invoice.invoiceDate.toISOString().split('T')[0];
     const pdfFilename = `${input.customer_id}_${invoiceDateStr}_${total.toFixed(2)}.pdf`;
-    
+
     return {
       subtotal: invoice.subtotal.getAmount(),
       discount: invoice.bulkDiscount.getAmount(),
@@ -151,12 +159,12 @@ export async function calculateLegacyInvoice(input: LegacyInvoiceInput, currentD
       taxAmount: invoice.tax.getAmount(),
       lateFee: lateFee,
       total: total,
-      pdfFilename: pdfFilename
+      pdfFilename: pdfFilename,
     };
   } catch (error) {
     // Handle minimum invoice amount by returning the minimum
     if (error instanceof Error && error.message.includes('below minimum')) {
-      const minAmount = 25.00;
+      const minAmount = 25.0;
       return {
         subtotal: minAmount,
         discount: 0,
@@ -164,7 +172,7 @@ export async function calculateLegacyInvoice(input: LegacyInvoiceInput, currentD
         taxAmount: 0,
         lateFee: 0,
         total: minAmount,
-        pdfFilename: `${input.customer_id}_${parseLegacyDate(input.invoice_date)}_${minAmount.toFixed(2)}.pdf`
+        pdfFilename: `${input.customer_id}_${parseLegacyDate(input.invoice_date)}_${minAmount.toFixed(2)}.pdf`,
       };
     }
     throw error;

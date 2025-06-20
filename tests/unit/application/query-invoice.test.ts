@@ -135,7 +135,7 @@ describe('QueryInvoiceUseCase', () => {
       const result = await queryInvoiceUseCase.query(dto);
 
       expect(result.invoices).toHaveLength(2);
-      expect(result.invoices[0].customerId).toBe('CUST123');
+      expect(result.invoices[0]?.customerId).toBe('CUST123');
       expect(mockInvoiceRepository.findByCustomerId).toHaveBeenCalledWith(
         'CUST123',
         {
@@ -246,7 +246,7 @@ describe('QueryInvoiceUseCase', () => {
       const dto: QueryInvoiceDto = {};
       const result = await queryInvoiceUseCase.query(dto);
 
-      expect(result.invoices[0].status).toBe('overdue');
+      expect(result.invoices[0]?.status).toBe('overdue');
     });
 
     it('should use default date range when not specified', async () => {
