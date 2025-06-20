@@ -1,29 +1,29 @@
 /** @type {import('jest').Config} */
 export default {
-  preset: 'ts-jest/presets/default-esm',
+  preset: 'ts-jest',
   testEnvironment: 'node',
-  extensionsToTreatAsEsm: ['.ts'],
+  testMatch: ['<rootDir>/tests/**/*.test.ts'],
+  setupFilesAfterEnv: ['<rootDir>/tests/helpers/setup.ts'],
   moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1',
-    '^@domain/(.*)\\.js$': '<rootDir>/src/domain/$1',
-    '^@application/(.*)\\.js$': '<rootDir>/src/application/$1',
-    '^@infrastructure/(.*)\\.js$': '<rootDir>/src/infrastructure/$1',
-    '^@interfaces/(.*)\\.js$': '<rootDir>/src/interfaces/$1',
+    // Handle path aliases
+    '^@domain/(.*)$': '<rootDir>/src/domain/$1',
+    '^@application/(.*)$': '<rootDir>/src/application/$1',
+    '^@infrastructure/(.*)$': '<rootDir>/src/infrastructure/$1',
+    '^@interfaces/(.*)$': '<rootDir>/src/interfaces/$1',
   },
   transform: {
     '^.+\\.tsx?$': [
       'ts-jest',
       {
-        useESM: true,
         tsconfig: {
-          module: 'ES2022',
-          moduleResolution: 'bundler',
+          module: 'commonjs',
+          esModuleInterop: true,
+          allowSyntheticDefaultImports: true,
         },
       },
     ],
   },
-  testMatch: ['<rootDir>/tests/**/*.test.ts'],
-  setupFilesAfterEnv: ['<rootDir>/tests/helpers/setup.ts'],
+  transformIgnorePatterns: [],
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',
@@ -39,4 +39,8 @@ export default {
   },
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
+  // Ensure proper module resolution
+  moduleDirectories: ['node_modules', '<rootDir>'],
+  // Resolve .js files to .ts files when using ts-jest
+  resolver: undefined,
 };

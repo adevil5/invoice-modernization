@@ -41,7 +41,7 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
   mkdir invoice-modernization && cd invoice-modernization
   npm init -y
   npm install -D typescript
-  npx tsc --init --target es2022 --module es2022 --moduleResolution bundler --strict
+  npx tsc --init --target es2022 --module es2022 --moduleResolution node --strict
   ```
 
   - [x] Configure `tsconfig.json` with paths, strict mode, and ES2022 features
@@ -59,7 +59,7 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
 
 - [x] **0.2.3** Initialize testing framework
   - [x] Install Jest with TypeScript: `npm i -D jest @types/jest ts-jest`
-  - [x] Run `npx ts-jest config:init` to generate jest.config.js
+  - [x] Configure Jest with ts-jest preset for ESM compatibility
   - [x] Configure coverage thresholds: 80% minimum
   - [x] Create test helpers and fixtures directories
 
@@ -146,53 +146,53 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
   - [x] Define PDF generator interface
   - [x] Add event publisher interface
 
-- [ ] **1.3.3** Implement QueryInvoice use case
-  - [ ] Write failing test: `tests/unit/application/query-invoice.test.ts`
-  - [ ] Implement `src/application/use-cases/query-invoice.ts`
-  - [ ] Add pagination support
-  - [ ] Include filtering and sorting logic
+- [x] **1.3.3** Implement QueryInvoice use case
+  - [x] Write failing test: `tests/unit/application/query-invoice.test.ts`
+  - [x] Implement `src/application/use-cases/query-invoice.ts`
+  - [x] Add pagination support
+  - [x] Include filtering and sorting logic
 
 ## Phase 2: Infrastructure Implementation (Day 3)
 
 ### 2.1 AWS Infrastructure Setup (0.5 days)
 
-- [ ] **2.1.1** Initialize Terraform configuration
+- [x] **2.1.1** Initialize Terraform configuration
 
   ```bash
   cd infrastructure/terraform
   terraform init
   ```
 
-  - [ ] Create `main.tf`, `variables.tf`, `outputs.tf`
-  - [ ] Setup backend configuration for state management
-  - [ ] Create workspace for dev environment: `terraform workspace new dev`
+  - [x] Create `main.tf`, `variables.tf`, `outputs.tf`
+  - [x] Setup backend configuration for state management
+  - [x] Create workspace for dev environment: `terraform workspace new dev`
 
-- [ ] **2.1.2** Define DynamoDB infrastructure
-  - [ ] Write Terraform module: `modules/dynamodb/main.tf`
-  - [ ] Configure table with GSI for queries
-  - [ ] Setup auto-scaling policies
-  - [ ] Enable point-in-time recovery
+- [x] **2.1.2** Define DynamoDB infrastructure
+  - [x] Write Terraform module: `modules/dynamodb/main.tf`
+  - [x] Configure table with GSI for queries
+  - [x] Setup auto-scaling policies
+  - [x] Enable point-in-time recovery
 
-- [ ] **2.1.3** Define Lambda infrastructure
-  - [ ] Write Terraform module: `modules/lambda/main.tf`
-  - [ ] Configure function with environment variables
-  - [ ] Setup IAM roles with least privilege
-  - [ ] Configure VPC settings if needed
+- [x] **2.1.3** Define Lambda infrastructure
+  - [x] Write Terraform module: `modules/lambda/main.tf`
+  - [x] Configure function with environment variables
+  - [x] Setup IAM roles with least privilege
+  - [x] Configure VPC settings if needed
 
-- [ ] **2.1.4** Define API Gateway infrastructure
-  - [ ] Write Terraform module: `modules/api-gateway/main.tf`
-  - [ ] Configure REST API with resources
-  - [ ] Setup request/response models
-  - [ ] Enable CORS and API key authentication
+- [x] **2.1.4** Define API Gateway infrastructure
+  - [x] Write Terraform module: `modules/api-gateway/main.tf`
+  - [x] Configure REST API with resources
+  - [x] Setup request/response models
+  - [x] Enable CORS and API key authentication
 
 ### 2.2 Repository Implementations (0.5 days)
 
-- [ ] **2.2.1** Implement DynamoDB repository
-  - [ ] Write integration test: `tests/integration/repositories/dynamodb.test.ts`
-  - [ ] Install AWS SDK v3: `npm i @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb`
-  - [ ] Implement `src/infrastructure/repositories/dynamodb-invoice-repository.ts`
-  - [ ] Add retry logic and error handling
-  - [ ] Use AWS SDK v3 best practices (modular imports, command pattern)
+- [x] **2.2.1** Implement DynamoDB repository
+  - [x] Write integration test: `tests/integration/repositories/dynamodb.test.ts`
+  - [x] Install AWS SDK v3: `npm i @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb`
+  - [x] Implement `src/infrastructure/repositories/dynamodb-invoice-repository.ts`
+  - [x] Add retry logic and error handling
+  - [x] Use AWS SDK v3 best practices (modular imports, command pattern)
 
 - [ ] **2.2.2** Setup LocalStack for testing
   - [ ] Create `docker-compose.yml` with LocalStack
@@ -303,12 +303,17 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
 
 ### 4.1 Build and Deployment Pipeline (0.5 days)
 
-- [ ] **4.1.1** Create Lambda deployment packages
-  - [ ] Setup esbuild for bundling: `npm i -D esbuild`
-  - [ ] Configure tree-shaking and minification
-  - [ ] Create separate bundles per function
-  - [ ] Optimize cold start performance
-  - [ ] Use esbuild over webpack for faster builds
+- [x] **4.1.1** Create Lambda deployment packages
+  - [x] Setup esbuild for bundling: `npm i -D esbuild`
+  - [x] Configure tree-shaking and minification
+  - [x] Create separate bundles per function
+  - [x] Optimize cold start performance
+  - [x] Use esbuild over webpack for faster builds
+  - [x] Configure ESM output with Node.js 22 compatibility
+  - [x] Implement external package handling for smaller bundles
+  - [x] Add source map generation for debugging
+  - [x] Create watch mode for development workflow
+  - [x] Document bundling strategies and best practices
 
 - [ ] **4.1.2** Implement blue-green deployment
   - [ ] Update Terraform for alias management

@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
-import type { Customer } from '../value-objects/customer.js';
-import type { InvoiceItem } from '../value-objects/invoice-item.js';
-import { Money } from '../value-objects/money.js';
-import { InvoiceValidationError } from '../exceptions/invoice-validation-error.js';
+import type { Customer } from '../value-objects/customer';
+import type { InvoiceItem } from '../value-objects/invoice-item';
+import { Money } from '../value-objects/money';
+import { InvoiceValidationError } from '../exceptions/invoice-validation-error';
 
 interface InvoiceData {
   invoiceNumber: string;

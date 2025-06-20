@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { calculateLegacyInvoice } from './legacy-parity-adapter.js';
+import { calculateLegacyInvoice } from './legacy-parity-adapter';
 
 interface LegacyInvoiceInput {
   customer_id: string;

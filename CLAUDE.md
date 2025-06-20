@@ -51,12 +51,14 @@ npm test
    - Input validation
 
 ### Key Patterns
-- Repository Pattern with DynamoDB
+- Repository Pattern with DynamoDB (includes pagination and filtering)
+- Query Use Cases with DTO transformations
 - Strategy Pattern for tax calculation
 - Value Objects for data integrity
 - Comprehensive error hierarchy
 - Port-Adapter pattern for infrastructure abstraction
 - Fire-and-forget event publishing for resilience
+- Modular Terraform infrastructure
 
 ### Event Flow
 1. CSV upload → S3 → Lambda
@@ -64,12 +66,20 @@ npm test
 3. Process Invoice → Generate PDF → S3
 4. Publish completion event
 
+### API Flow
+1. REST API → API Gateway → Lambda
+2. Query validation → Use Case → Repository
+3. DynamoDB query with GSIs → DTO transformation
+4. Paginated response with cursor
+
 ## Essential Commands
 
 ```bash
 # Development
-npm run build          # Build TypeScript
-npm run bundle         # Bundle for Lambda
+npm run dev           # Watch mode with instant rebuilds
+npm run build         # Production build with esbuild
+npm run build:dev     # Development build
+npm run build:analyze # Build and view bundle analysis
 npm test              # Run tests
 npm run test:coverage # Test coverage
 
@@ -81,26 +91,36 @@ npm run format        # Format code
 # Infrastructure
 cd infrastructure/terraform
 terraform workspace select dev
+terraform get  # Download modules
+terraform validate  # Validate configuration
 terraform apply -var-file=environments/dev.tfvars
+
+# API Testing
+npm run local:api     # Test API locally with SAM
+curl http://localhost:3000/invoices?customerId=CUST123
 ```
 
 ## Critical Configuration
 
 ### TypeScript/ESM Setup
-- **ALWAYS** use `.js` extensions in imports
-- Target: ES2022, Module: ES2022
+- **Build System**: esbuild handles all bundling and module resolution
+- Target: ES2022, Module: ES2022, ModuleResolution: node
 - Path aliases configured in tsconfig.json
-- Jest configured for ESM
+- Jest configured with ts-jest for testing
+- esbuild bundles all code for Lambda deployment with ESM output
 
 ### Business Rules
 - Minimum invoice: $25
 - Bulk discount: 3% for 100+ items
 - Tax: State rates + Q4 adjustment (+2% Oct-Dec)
 - Customer tax override takes precedence
+- Invoice status: Pending (default), Paid (paid_at set), Overdue (15+ days unpaid)
+- Query defaults: 90-day date range, 20 item limit
 
 ### Performance
 - ES modules: ~43.5% better cold starts
-- esbuild bundling: ~50% smaller packages
+- esbuild bundling: ~97% smaller packages (12KB bundles)
+- Build time: <0.2s (88% faster than tsc)
 - Immutable value objects in hot paths
 
 ### Security
@@ -148,9 +168,18 @@ For detailed information, see:
 4. **Test thoroughly**: Aim for 100% domain coverage
 5. **Before committing**: Run lint, typecheck, and tests
 
+## Build System
+
+The project uses esbuild for bundling Lambda functions:
+- Automatic entry point discovery for Lambda handlers
+- Path alias resolution (@domain, @application, etc.)
+- External AWS SDK to use Lambda runtime version
+- Source maps for debugging
+- Watch mode for development (`npm run dev`)
+
 ## Important Notes
 
-- **ESM Imports**: Always include `.js` extension
+- **ESM Imports**: No `.js` extensions needed in source code
 - **Node Version**: Use v22.12.0+ (check .nvmrc)
 - **Legacy Format**: CSV must match Python 2.7 output exactly
 - **Tax Logic**: State rates with Q4 adjustment and customer overrides
@@ -158,3 +187,6 @@ For detailed information, see:
 - **Date Handling**: Parse dates at noon local time to avoid timezone issues
 - **Event Publishing**: Failures are logged but don't fail the main operation
 - **Correlation IDs**: Use optional spread pattern for proper TypeScript typing
+- **Terraform Modules**: Use workspace-based environment separation
+- **API Pagination**: Cursor-based with configurable limits (max 100)
+- **Query Patterns**: Use GSIs for efficient filtering by customer, status, date

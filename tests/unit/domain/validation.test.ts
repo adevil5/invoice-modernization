@@ -1,10 +1,10 @@
 import { describe, it, expect } from '@jest/globals';
-import { ValidationService } from '../../../src/domain/services/validation-service.js';
-import { FieldValidationError, BusinessRuleViolationError } from '../../../src/domain/exceptions/validation-errors.js';
-import { Customer } from '../../../src/domain/value-objects/customer.js';
-import { Address } from '../../../src/domain/value-objects/address.js';
-import { InvoiceItem } from '../../../src/domain/value-objects/invoice-item.js';
-import { Money } from '../../../src/domain/value-objects/money.js';
+import { ValidationService } from '@domain/services/validation-service';
+import { FieldValidationError, BusinessRuleViolationError } from '@domain/exceptions/validation-errors';
+import { Customer } from '@domain/value-objects/customer';
+import { Address } from '@domain/value-objects/address';
+import { InvoiceItem } from '@domain/value-objects/invoice-item';
+import { Money } from '@domain/value-objects/money';
 
 describe('ValidationService', () => {
   describe('validateInvoiceData', () => {
@@ -42,8 +42,8 @@ describe('ValidationService', () => {
       
       expect(errors).toHaveLength(1);
       expect(errors[0]).toBeInstanceOf(FieldValidationError);
-      expect((errors[0] as FieldValidationError).field).toBe('customer');
-      expect(errors[0].message).toContain('Customer is required');
+      expect((errors[0] as FieldValidationError)?.field).toBe('customer');
+      expect(errors[0]?.message).toContain('Customer is required');
     });
 
     it('should return error when items array is empty', () => {
@@ -54,8 +54,8 @@ describe('ValidationService', () => {
       
       expect(errors).toHaveLength(1);
       expect(errors[0]).toBeInstanceOf(FieldValidationError);
-      expect((errors[0] as FieldValidationError).field).toBe('items');
-      expect(errors[0].message).toContain('At least one item is required');
+      expect((errors[0] as FieldValidationError)?.field).toBe('items');
+      expect(errors[0]?.message).toContain('At least one item is required');
     });
 
     it('should return error when invoice date is missing', () => {
@@ -66,8 +66,8 @@ describe('ValidationService', () => {
       
       expect(errors).toHaveLength(1);
       expect(errors[0]).toBeInstanceOf(FieldValidationError);
-      expect((errors[0] as FieldValidationError).field).toBe('invoiceDate');
-      expect(errors[0].message).toContain('Invoice date is required');
+      expect((errors[0] as FieldValidationError)?.field).toBe('invoiceDate');
+      expect(errors[0]?.message).toContain('Invoice date is required');
     });
 
     it('should return error when due date is missing', () => {
@@ -78,8 +78,8 @@ describe('ValidationService', () => {
       
       expect(errors).toHaveLength(1);
       expect(errors[0]).toBeInstanceOf(FieldValidationError);
-      expect((errors[0] as FieldValidationError).field).toBe('dueDate');
-      expect(errors[0].message).toContain('Due date is required');
+      expect((errors[0] as FieldValidationError)?.field).toBe('dueDate');
+      expect(errors[0]?.message).toContain('Due date is required');
     });
 
     it('should return error when due date is before invoice date', () => {
@@ -94,8 +94,8 @@ describe('ValidationService', () => {
       
       expect(errors).toHaveLength(1);
       expect(errors[0]).toBeInstanceOf(BusinessRuleViolationError);
-      expect((errors[0] as BusinessRuleViolationError).rule).toBe('DUE_DATE_BEFORE_INVOICE_DATE');
-      expect(errors[0].message).toContain('Due date cannot be before invoice date');
+      expect((errors[0] as BusinessRuleViolationError)?.rule).toBe('DUE_DATE_BEFORE_INVOICE_DATE');
+      expect(errors[0]?.message).toContain('Due date cannot be before invoice date');
     });
 
     it('should return multiple errors when multiple fields are invalid', () => {
@@ -151,7 +151,7 @@ describe('ValidationService', () => {
       
       expect(errors).toHaveLength(1);
       expect(errors[0]).toBeInstanceOf(FieldValidationError);
-      expect((errors[0] as FieldValidationError).field).toBe('customer.id');
+      expect((errors[0] as FieldValidationError)?.field).toBe('customer.id');
     });
 
     it('should return error for empty customer name', () => {
@@ -169,7 +169,7 @@ describe('ValidationService', () => {
       
       expect(errors).toHaveLength(1);
       expect(errors[0]).toBeInstanceOf(FieldValidationError);
-      expect((errors[0] as FieldValidationError).field).toBe('customer.name');
+      expect((errors[0] as FieldValidationError)?.field).toBe('customer.name');
     });
 
     it('should return error for missing address', () => {
@@ -182,7 +182,7 @@ describe('ValidationService', () => {
       
       expect(errors).toHaveLength(1);
       expect(errors[0]).toBeInstanceOf(FieldValidationError);
-      expect((errors[0] as FieldValidationError).field).toBe('customer.address');
+      expect((errors[0] as FieldValidationError)?.field).toBe('customer.address');
     });
   });
 
@@ -228,8 +228,8 @@ describe('ValidationService', () => {
       
       expect(errors).toHaveLength(1);
       expect(errors[0]).toBeInstanceOf(FieldValidationError);
-      expect((errors[0] as FieldValidationError).field).toBe('address.state');
-      expect(errors[0].message).toContain('Invalid state code');
+      expect((errors[0] as FieldValidationError)?.field).toBe('address.state');
+      expect(errors[0]?.message).toContain('Invalid state code');
     });
 
     it('should validate zip code format', () => {
@@ -243,8 +243,8 @@ describe('ValidationService', () => {
       
       expect(errors).toHaveLength(1);
       expect(errors[0]).toBeInstanceOf(FieldValidationError);
-      expect((errors[0] as FieldValidationError).field).toBe('address.zip');
-      expect(errors[0].message).toContain('Invalid zip code format');
+      expect((errors[0] as FieldValidationError)?.field).toBe('address.zip');
+      expect(errors[0]?.message).toContain('Invalid zip code format');
     });
   });
 
@@ -270,7 +270,7 @@ describe('ValidationService', () => {
       
       expect(errors).toHaveLength(1);
       expect(errors[0]).toBeInstanceOf(FieldValidationError);
-      expect((errors[0] as FieldValidationError).field).toBe('item.description');
+      expect((errors[0] as FieldValidationError)?.field).toBe('item.description');
     });
 
     it('should return error for zero quantity', () => {
@@ -283,8 +283,8 @@ describe('ValidationService', () => {
       
       expect(errors).toHaveLength(1);
       expect(errors[0]).toBeInstanceOf(FieldValidationError);
-      expect((errors[0] as FieldValidationError).field).toBe('item.quantity');
-      expect(errors[0].message).toContain('Quantity must be positive');
+      expect((errors[0] as FieldValidationError)?.field).toBe('item.quantity');
+      expect(errors[0]?.message).toContain('Quantity must be positive');
     });
 
     it('should return error for negative quantity', () => {
@@ -297,7 +297,7 @@ describe('ValidationService', () => {
       
       expect(errors).toHaveLength(1);
       expect(errors[0]).toBeInstanceOf(FieldValidationError);
-      expect((errors[0] as FieldValidationError).field).toBe('item.quantity');
+      expect((errors[0] as FieldValidationError)?.field).toBe('item.quantity');
     });
 
     it('should return error for negative unit price', () => {
@@ -310,8 +310,8 @@ describe('ValidationService', () => {
       
       expect(errors).toHaveLength(1);
       expect(errors[0]).toBeInstanceOf(FieldValidationError);
-      expect((errors[0] as FieldValidationError).field).toBe('item.unitPrice');
-      expect(errors[0].message).toContain('Unit price cannot be negative');
+      expect((errors[0] as FieldValidationError)?.field).toBe('item.unitPrice');
+      expect(errors[0]?.message).toContain('Unit price cannot be negative');
     });
   });
 
@@ -351,9 +351,9 @@ describe('ValidationService', () => {
       
       expect(errors).toHaveLength(1);
       expect(errors[0]).toBeInstanceOf(BusinessRuleViolationError);
-      expect((errors[0] as BusinessRuleViolationError).rule).toBe('MINIMUM_INVOICE_AMOUNT');
-      expect((errors[0] as BusinessRuleViolationError).severity).toBe('error');
-      expect(errors[0].message).toContain('Invoice amount is below minimum of $25.00');
+      expect((errors[0] as BusinessRuleViolationError)?.rule).toBe('MINIMUM_INVOICE_AMOUNT');
+      expect((errors[0] as BusinessRuleViolationError)?.severity).toBe('error');
+      expect(errors[0]?.message).toContain('Invoice amount is below minimum of $25.00');
     });
 
     it('should validate large invoices for potential issues', () => {
@@ -370,8 +370,8 @@ describe('ValidationService', () => {
       
       expect(errors).toHaveLength(1);
       expect(errors[0]).toBeInstanceOf(BusinessRuleViolationError);
-      expect((errors[0] as BusinessRuleViolationError).rule).toBe('UNUSUALLY_LARGE_INVOICE');
-      expect((errors[0] as BusinessRuleViolationError).severity).toBe('warning');
+      expect((errors[0] as BusinessRuleViolationError)?.rule).toBe('UNUSUALLY_LARGE_INVOICE');
+      expect((errors[0] as BusinessRuleViolationError)?.severity).toBe('warning');
     });
   });
 
@@ -429,8 +429,8 @@ describe('ValidationService', () => {
       const errors = service.validateCSVRow(row);
       
       expect(errors).toHaveLength(1);
-      expect((errors[0] as FieldValidationError).field).toBe('csv.amount');
-      expect(errors[0].message).toContain('Invalid amount format');
+      expect((errors[0] as FieldValidationError)?.field).toBe('csv.amount');
+      expect(errors[0]?.message).toContain('Invalid amount format');
     });
 
     it('should validate date formats', () => {
@@ -451,8 +451,8 @@ describe('ValidationService', () => {
       const errors = service.validateCSVRow(row);
       
       expect(errors).toHaveLength(1);
-      expect((errors[0] as FieldValidationError).field).toBe('csv.invoice_date');
-      expect(errors[0].message).toContain('Invalid date format');
+      expect((errors[0] as FieldValidationError)?.field).toBe('csv.invoice_date');
+      expect(errors[0]?.message).toContain('Invalid date format');
     });
 
     it('should validate items format', () => {
@@ -473,8 +473,8 @@ describe('ValidationService', () => {
       const errors = service.validateCSVRow(row);
       
       expect(errors).toHaveLength(1);
-      expect((errors[0] as FieldValidationError).field).toBe('csv.items');
-      expect(errors[0].message).toContain('Invalid items format');
+      expect((errors[0] as FieldValidationError)?.field).toBe('csv.items');
+      expect(errors[0]?.message).toContain('Invalid items format');
     });
   });
 });

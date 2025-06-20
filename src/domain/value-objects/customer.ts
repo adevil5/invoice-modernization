@@ -1,4 +1,4 @@
-import type { Address } from './address.js';
+import type { Address } from './address';
 
 export class Customer {
   constructor(

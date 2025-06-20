@@ -1,8 +1,8 @@
-import { InvoiceNotFoundError } from '../../domain/exceptions/invoice-not-found-error.js';
-import type { InvoiceRepository } from '../ports/invoice-repository.js';
-import type { PdfGenerator } from '../ports/pdf-generator.js';
-import type { DocumentRepository } from '../ports/document-repository.js';
-import type { EventPublisher, InvoiceProcessedEvent, InvoiceProcessingFailedEvent } from '../ports/event-publisher.js';
+import { InvoiceNotFoundError } from '@domain/exceptions/invoice-not-found-error';
+import type { InvoiceRepository } from '../ports/invoice-repository';
+import type { PdfGenerator } from '../ports/pdf-generator';
+import type { DocumentRepository } from '../ports/document-repository';
+import type { EventPublisher, InvoiceProcessedEvent, InvoiceProcessingFailedEvent } from '../ports/event-publisher';
 
 /**
  * Result of processing an invoice.

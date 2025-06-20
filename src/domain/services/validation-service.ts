@@ -1,8 +1,8 @@
-import type { ValidationError } from '../exceptions/validation-errors.js';
-import { FieldValidationError, BusinessRuleViolationError } from '../exceptions/validation-errors.js';
-import type { Customer } from '../value-objects/customer.js';
-import type { InvoiceItem } from '../value-objects/invoice-item.js';
-import { Money } from '../value-objects/money.js';
+import type { ValidationError } from '../exceptions/validation-errors';
+import { FieldValidationError, BusinessRuleViolationError } from '../exceptions/validation-errors';
+import type { Customer } from '../value-objects/customer';
+import type { InvoiceItem } from '../value-objects/invoice-item';
+import { Money } from '../value-objects/money';
 
 interface InvoiceData {
   customer: Customer | null;

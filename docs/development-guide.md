@@ -193,6 +193,28 @@ npm run logs:dev
 npm run logs:prod
 ```
 
+### API Development
+
+```bash
+# Start API Gateway locally
+sam local start-api
+
+# Test query endpoint
+curl "http://localhost:3000/invoices?customerId=CUST123&limit=10"
+
+# Test single invoice endpoint
+curl "http://localhost:3000/invoices/INV-2024-001"
+
+# Test with pagination cursor
+curl "http://localhost:3000/invoices?cursor=eyJpbnZvaWNlSWQiOiJJTlYtMjAyNC0wMTAifQ=="
+
+# Test with date range
+curl "http://localhost:3000/invoices?startDate=2024-01-01&endDate=2024-12-31"
+
+# Test with status filter
+curl "http://localhost:3000/invoices?status=overdue"
+```
+
 ## Performance Profiling
 
 ```bash

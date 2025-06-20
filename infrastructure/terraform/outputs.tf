@@ -1,0 +1,170 @@
+# S3 Bucket Outputs
+output "lambda_deployments_bucket" {
+  description = "S3 bucket for Lambda deployment packages"
+  value = {
+    id          = aws_s3_bucket.lambda_deployments.id
+    arn         = aws_s3_bucket.lambda_deployments.arn
+    domain_name = aws_s3_bucket.lambda_deployments.bucket_domain_name
+  }
+}
+
+output "invoices_bucket" {
+  description = "S3 bucket for processed invoices"
+  value = {
+    id          = aws_s3_bucket.invoices.id
+    arn         = aws_s3_bucket.invoices.arn
+    domain_name = aws_s3_bucket.invoices.bucket_domain_name
+  }
+}
+
+# DynamoDB Outputs
+output "dynamodb_table" {
+  description = "DynamoDB table for invoices"
+  value = {
+    name         = module.invoice_dynamodb.table_name
+    arn          = module.invoice_dynamodb.table_arn
+    stream_arn   = module.invoice_dynamodb.table_stream_arn
+    billing_mode = module.invoice_dynamodb.table_billing_mode
+    gsi_names    = module.invoice_dynamodb.gsi_names
+  }
+}
+
+# CloudWatch Outputs
+output "cloudwatch_log_group" {
+  description = "CloudWatch log group for Lambda functions"
+  value = {
+    name = aws_cloudwatch_log_group.lambda_logs.name
+    arn  = aws_cloudwatch_log_group.lambda_logs.arn
+  }
+}
+
+# EventBridge Outputs
+output "event_bus" {
+  description = "EventBridge event bus"
+  value = {
+    name = aws_cloudwatch_event_bus.main.name
+    arn  = aws_cloudwatch_event_bus.main.arn
+  }
+}
+
+# KMS Outputs
+output "kms_key" {
+  description = "KMS key for encryption"
+  value = {
+    id    = aws_kms_key.main.id
+    arn   = aws_kms_key.main.arn
+    alias = aws_kms_alias.main.name
+  }
+  sensitive = true
+}
+
+# Account and Region Information
+output "aws_account_id" {
+  description = "AWS Account ID"
+  value       = data.aws_caller_identity.current.account_id
+}
+
+output "aws_region" {
+  description = "AWS Region"
+  value       = var.aws_region
+}
+
+output "environment" {
+  description = "Current environment (Terraform workspace)"
+  value       = local.environment
+}
+
+# Environment Configuration
+output "environment_config" {
+  description = "Current environment configuration"
+  value       = local.current_env_config
+}
+
+# Tags
+output "common_tags" {
+  description = "Common tags applied to all resources"
+  value       = local.common_tags
+}
+
+# Lambda Function Outputs
+output "lambda_functions" {
+  description = "Details of all Lambda functions"
+  value = {
+    create_invoice = {
+      name        = module.create_invoice_lambda.function_name
+      arn         = module.create_invoice_lambda.function_arn
+      invoke_arn  = module.create_invoice_lambda.function_invoke_arn
+      alias_arn   = module.create_invoice_lambda.function_alias_arn
+      role_arn    = module.create_invoice_lambda.role_arn
+    }
+    process_invoice = {
+      name        = module.process_invoice_lambda.function_name
+      arn         = module.process_invoice_lambda.function_arn
+      invoke_arn  = module.process_invoice_lambda.function_invoke_arn
+      alias_arn   = module.process_invoice_lambda.function_alias_arn
+      role_arn    = module.process_invoice_lambda.role_arn
+    }
+    get_invoice = {
+      name        = module.get_invoice_lambda.function_name
+      arn         = module.get_invoice_lambda.function_arn
+      invoke_arn  = module.get_invoice_lambda.function_invoke_arn
+      alias_arn   = module.get_invoice_lambda.function_alias_arn
+      role_arn    = module.get_invoice_lambda.role_arn
+    }
+    list_invoices = {
+      name        = module.list_invoices_lambda.function_name
+      arn         = module.list_invoices_lambda.function_arn
+      invoke_arn  = module.list_invoices_lambda.function_invoke_arn
+      alias_arn   = module.list_invoices_lambda.function_alias_arn
+      role_arn    = module.list_invoices_lambda.role_arn
+    }
+    csv_upload = {
+      name        = module.csv_upload_lambda.function_name
+      arn         = module.csv_upload_lambda.function_arn
+      invoke_arn  = module.csv_upload_lambda.function_invoke_arn
+      alias_arn   = module.csv_upload_lambda.function_alias_arn
+      role_arn    = module.csv_upload_lambda.role_arn
+    }
+    dlq_handler = {
+      name        = module.dlq_handler_lambda.function_name
+      arn         = module.dlq_handler_lambda.function_arn
+      invoke_arn  = module.dlq_handler_lambda.function_invoke_arn
+      alias_arn   = module.dlq_handler_lambda.function_alias_arn
+      role_arn    = module.dlq_handler_lambda.role_arn
+    }
+  }
+}
+
+# SQS Dead Letter Queue Outputs
+output "lambda_dlq" {
+  description = "Lambda Dead Letter Queue details"
+  value = {
+    url = aws_sqs_queue.lambda_dlq.url
+    arn = aws_sqs_queue.lambda_dlq.arn
+    name = aws_sqs_queue.lambda_dlq.name
+  }
+}
+
+# API Gateway Outputs
+output "api_gateway" {
+  description = "API Gateway details"
+  value = {
+    id           = module.api_gateway.api_id
+    arn          = module.api_gateway.api_arn
+    name         = module.api_gateway.api_name
+    endpoint     = module.api_gateway.api_endpoint
+    stage        = module.api_gateway.api_stage_name
+    endpoints    = module.api_gateway.endpoints
+  }
+}
+
+output "api_key" {
+  description = "API Gateway API key ID (use 'terraform output -raw api_key_value' to get the actual key)"
+  value       = module.api_gateway.api_key_id
+}
+
+output "api_key_value" {
+  description = "API Gateway API key value"
+  value       = module.api_gateway.api_key_value
+  sensitive   = true
+}

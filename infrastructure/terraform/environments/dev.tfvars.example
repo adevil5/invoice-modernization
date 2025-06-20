@@ -1,0 +1,33 @@
+# Development environment configuration
+aws_region     = "us-east-1"
+aws_profile    = "invoice"
+
+# Lambda configuration
+lambda_runtime      = "nodejs22.x"
+lambda_architecture = "arm64"
+
+# DynamoDB configuration (dev uses on-demand billing)
+enable_point_in_time_recovery = false
+
+# API Gateway
+api_stage_name           = "dev"
+api_throttle_burst_limit = 50
+api_throttle_rate_limit  = 25
+
+# Monitoring
+enable_xray_tracing = true
+log_retention_days  = 7
+alarm_email        = ""
+
+# Features
+enable_dead_letter_queue = true
+enable_api_caching      = false
+
+# Security
+allowed_cors_origins = ["http://localhost:3000", "http://localhost:5173"]
+
+# Tags
+additional_tags = {
+  CostCenter = "development"
+  Owner      = "dev-team"
+}

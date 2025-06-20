@@ -1,4 +1,30 @@
-import type { Invoice } from '../../domain/entities/invoice.js';
+import type { Invoice } from '@domain/entities/invoice';
+
+/**
+ * Options for find operations with pagination and sorting.
+ */
+export interface FindOptions {
+  limit?: number;
+  cursor?: string;
+  sortBy?: 'date' | 'total';
+  sortOrder?: 'asc' | 'desc';
+}
+
+/**
+ * Options for date range queries.
+ */
+export interface DateRangeOptions extends FindOptions {
+  customerId?: string;
+  status?: 'pending' | 'paid' | 'overdue';
+}
+
+/**
+ * Result of find operations with pagination support.
+ */
+export interface FindResult {
+  invoices: Invoice[];
+  nextCursor?: string | undefined;
+}
 
 /**
  * Port interface for invoice persistence.
@@ -27,16 +53,8 @@ export interface InvoiceRepository {
    */
   findByCustomerId(
     customerId: string,
-    options?: {
-      limit?: number;
-      cursor?: string;
-      sortBy?: 'date' | 'total';
-      sortOrder?: 'asc' | 'desc';
-    }
-  ): Promise<{
-    invoices: Invoice[];
-    nextCursor?: string;
-  }>;
+    options?: FindOptions
+  ): Promise<FindResult>;
 
   /**
    * Find invoices within a date range.
@@ -48,16 +66,8 @@ export interface InvoiceRepository {
   findByDateRange(
     startDate: Date,
     endDate: Date,
-    options?: {
-      limit?: number;
-      cursor?: string;
-      customerId?: string;
-      status?: 'pending' | 'paid' | 'overdue';
-    }
-  ): Promise<{
-    invoices: Invoice[];
-    nextCursor?: string;
-  }>;
+    options?: DateRangeOptions
+  ): Promise<FindResult>;
 
   /**
    * Check if an invoice with the given number already exists.

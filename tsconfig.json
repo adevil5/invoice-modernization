@@ -6,8 +6,8 @@
 
     /* Modules */
     "module": "es2022",
-    "rootDir": "./src",
-    "moduleResolution": "bundler",
+    "rootDir": ".",
+    "moduleResolution": "node",
     "moduleDetection": "force",
     "baseUrl": "./",
     "paths": {
@@ -19,10 +19,9 @@
     "resolveJsonModule": true,
 
     /* Emit */
-    "outDir": "./dist",
-    "noEmit": true,
     "declaration": true,
     "declarationMap": true,
+    "sourceMap": true,
 
     /* Interop Constraints */
     "isolatedModules": true,
@@ -51,7 +50,5 @@
 
     /* Completeness */
     "skipLibCheck": true
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "tests", "**/*.test.ts", "**/*.spec.ts"]
+  }
 }

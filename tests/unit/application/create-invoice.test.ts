@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import { CreateInvoiceUseCase } from '../../../src/application/use-cases/create-invoice.js';
-import type { InvoiceRepository } from '../../../src/application/ports/invoice-repository.js';
-import type { EventPublisher } from '../../../src/application/ports/event-publisher.js';
-import type { CreateInvoiceDto } from '../../../src/application/dto/create-invoice-dto.js';
-import { Invoice } from '../../../src/domain/entities/invoice.js';
-import { InvoiceValidationError } from '../../../src/domain/exceptions/invoice-validation-error.js';
-import { CompositeValidationError } from '../../../src/domain/exceptions/validation-errors.js';
+import { CreateInvoiceUseCase } from '@application/use-cases/create-invoice';
+import type { InvoiceRepository } from '@application/ports/invoice-repository';
+import type { EventPublisher } from '@application/ports/event-publisher';
+import type { CreateInvoiceDto } from '@application/dto/create-invoice-dto';
+import { Invoice } from '@domain/entities/invoice';
+import { InvoiceValidationError } from '@domain/exceptions/invoice-validation-error';
+import { CompositeValidationError } from '@domain/exceptions/validation-errors';
 
 describe('CreateInvoiceUseCase', () => {
   let mockInvoiceRepository: jest.Mocked<InvoiceRepository>;
@@ -27,10 +27,7 @@ describe('CreateInvoiceUseCase', () => {
       publish: jest.fn(),
     };
 
-    createInvoiceUseCase = new CreateInvoiceUseCase(
-      mockInvoiceRepository,
-      mockEventPublisher
-    );
+    createInvoiceUseCase = new CreateInvoiceUseCase(mockInvoiceRepository, mockEventPublisher);
   });
 
   describe('execute', () => {
@@ -67,18 +64,18 @@ describe('CreateInvoiceUseCase', () => {
       const result = await createInvoiceUseCase.execute(createInvoiceDto);
 
       expect(result).toBeInstanceOf(Invoice);
-      expect(result.invoiceNumber).toBe('INV-2024-001');
-      expect(result.customer.id).toBe('CUST123');
-      expect(result.customer.name).toBe('Acme Corp');
-      expect(result.items).toHaveLength(2);
-      expect(result.subtotal.getAmount()).toBe(1250.0);
+      expect(result.getInvoiceNumber()).toBe('INV-2024-001');
+      expect(result.getCustomer().getId()).toBe('CUST123');
+      expect(result.getCustomer().getName()).toBe('Acme Corp');
+      expect(result.getItems()).toHaveLength(2);
+      expect(result.getSubtotal().getAmount()).toBe(1250.0);
       expect(mockInvoiceRepository.save).toHaveBeenCalledWith(result);
       expect(mockEventPublisher.publish).toHaveBeenCalledWith({
         eventType: 'InvoiceCreated',
-        invoiceId: result.invoiceNumber,
-        customerId: result.customer.getId(),
-        total: result.total.getAmount(),
-        dueDate: result.dueDate.toISOString(),
+        invoiceId: result.getInvoiceNumber(),
+        customerId: result.getCustomer().getId(),
+        total: result.getTotal().getAmount(),
+        dueDate: result.getDueDate().toISOString(),
         timestamp: expect.any(Date),
       });
     });
@@ -107,8 +104,8 @@ describe('CreateInvoiceUseCase', () => {
 
       const result = await createInvoiceUseCase.execute(createInvoiceDto);
 
-      expect(result.subtotal.getAmount()).toBe(11000.0);
-      expect(result.bulkDiscount.getAmount()).toBe(330.0); // 3% of 11000
+      expect(result.getSubtotal().getAmount()).toBe(11000.0);
+      expect(result.getBulkDiscount().getAmount()).toBe(330.0); // 3% of 11000
     });
 
     it('should apply Q4 tax adjustment for October-December invoices', async () => {
@@ -137,7 +134,7 @@ describe('CreateInvoiceUseCase', () => {
 
       // NY state tax is 8.875% + 2% Q4 adjustment = 10.875%
       const expectedTax = 1000.0 * 0.10875;
-      expect(result.tax.getAmount()).toBe(Number(expectedTax.toFixed(2)));
+      expect(result.calculateTax().getAmount()).toBe(Number(expectedTax.toFixed(2)));
     });
 
     it('should handle tax-exempt customers', async () => {
@@ -164,7 +161,7 @@ describe('CreateInvoiceUseCase', () => {
 
       const result = await createInvoiceUseCase.execute(createInvoiceDto);
 
-      expect(result.tax.getAmount()).toBe(0);
+      expect(result.calculateTax().getAmount()).toBe(0);
     });
 
     it('should reject invoices below minimum amount', async () => {
@@ -190,7 +187,7 @@ describe('CreateInvoiceUseCase', () => {
       };
 
       await expect(createInvoiceUseCase.execute(createInvoiceDto)).rejects.toThrow(
-        CompositeValidationError
+        CompositeValidationError,
       );
     });
 
@@ -211,7 +208,7 @@ describe('CreateInvoiceUseCase', () => {
       };
 
       await expect(createInvoiceUseCase.execute(createInvoiceDto)).rejects.toThrow(
-        CompositeValidationError
+        CompositeValidationError,
       );
     });
 
@@ -240,7 +237,7 @@ describe('CreateInvoiceUseCase', () => {
       mockInvoiceRepository.exists.mockResolvedValue(true);
 
       await expect(createInvoiceUseCase.execute(createInvoiceDto)).rejects.toThrow(
-        InvoiceValidationError
+        InvoiceValidationError,
       );
       expect(mockInvoiceRepository.exists).toHaveBeenCalledWith('INV-DUPLICATE');
     });
@@ -270,7 +267,7 @@ describe('CreateInvoiceUseCase', () => {
       mockInvoiceRepository.save.mockRejectedValue(new Error('Database error'));
 
       await expect(createInvoiceUseCase.execute(createInvoiceDto)).rejects.toThrow(
-        'Database error'
+        'Database error',
       );
     });
 
@@ -335,9 +332,10 @@ describe('CreateInvoiceUseCase', () => {
       const result = await createInvoiceUseCase.execute(createInvoiceDto);
 
       // Verify proper rounding to 2 decimal places
-      expect(result.items[0].getTotal().getAmount()).toBe(111.09); // 3.333 * 33.333 = 111.08889 -> 111.09
-      expect(result.items[1].getTotal().getAmount()).toBe(55.55); // 5.5 * 10.1 = 55.55
-      expect(result.subtotal.getAmount()).toBe(166.64); // 111.09 + 55.55 = 166.64
+      const items = result.getItems();
+      expect(items[0]?.getTotal().getAmount()).toBe(111.09); // 3.333 * 33.333 = 111.08889 -> 111.09
+      expect(items[1]?.getTotal().getAmount()).toBe(55.55); // 5.5 * 10.1 = 55.55
+      expect(result.getSubtotal().getAmount()).toBe(166.64); // 111.09 + 55.55 = 166.64
     });
   });
 });
