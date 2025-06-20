@@ -13,7 +13,12 @@
     "prepare": "husky install",
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
-    "bundle": "esbuild src/interfaces/http/*.ts src/interfaces/events/*.ts --bundle --platform=node --target=node22 --format=esm --outdir=dist",
+    "bundle": "node esbuild.config.mjs",
+    "bundle:dev": "NODE_ENV=development node esbuild.config.mjs",
+    "bundle:prod": "NODE_ENV=production node esbuild.config.mjs",
+    "bundle:watch": "node esbuild.config.mjs --watch",
+    "bundle:advanced": "node esbuild.config.advanced.mjs build",
+    "bundle:serve": "node esbuild.config.advanced.mjs serve",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write 'src/**/*.ts' 'tests/**/*.ts'",
@@ -32,6 +37,8 @@
   "type": "module",
   "devDependencies": {
     "@eslint/js": "^9.29.0",
+    "esbuild": "^0.24.2",
+    "glob": "^11.0.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/git": "^10.0.1",
@@ -41,6 +48,8 @@
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.34.1",
     "@typescript-eslint/parser": "^8.34.1",
+    "aws-sdk-client-mock": "^4.1.0",
+    "aws-sdk-client-mock-jest": "^4.1.0",
     "eslint": "^9.29.0",
     "eslint-config-prettier": "^10.1.5",
     "husky": "^8.0.0",
@@ -52,6 +61,9 @@
     "typescript-eslint": "^8.34.1"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.830.0",
+    "@aws-sdk/lib-dynamodb": "^3.830.0",
+    "tslib": "^2.8.1",
     "uuid": "^11.1.0"
   }
 }

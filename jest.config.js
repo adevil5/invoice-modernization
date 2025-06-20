@@ -24,6 +24,9 @@ export default {
   },
   testMatch: ['<rootDir>/tests/**/*.test.ts'],
   setupFilesAfterEnv: ['<rootDir>/tests/helpers/setup.ts'],
+  transformIgnorePatterns: [
+    'node_modules/(?!(@aws-sdk|@smithy|@aws-crypto|uuid)/)'
+  ],
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',
