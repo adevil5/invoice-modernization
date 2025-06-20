@@ -1,7 +1,7 @@
 import type { Invoice } from '../../domain/entities/invoice.js';
 import { InvoiceNotFoundError } from '../../domain/exceptions/invoice-not-found-error.js';
 import { InvoiceValidationError } from '../../domain/exceptions/invoice-validation-error.js';
-import type { InvoiceRepository } from '../ports/invoice-repository.js';
+import type { InvoiceRepository, FindResult } from '../ports/invoice-repository.js';
 import type {
   QueryInvoiceDto,
   QueryInvoiceByIdDto,
@@ -74,7 +74,7 @@ export class QueryInvoiceUseCase {
     // Validate and normalize parameters
     const normalizedParams = this.validateAndNormalizeQueryParams(dto);
 
-    let result: { invoices: Invoice[]; nextCursor?: string };
+    let result: FindResult;
 
     // Query by customer ID if specified
     if (normalizedParams.customerId) {
@@ -109,7 +109,7 @@ export class QueryInvoiceUseCase {
 
     // Transform to response format
     const response: QueryInvoiceResponse = {
-      invoices: result.invoices.map(invoice => this.transformInvoiceToSummary(invoice))
+      invoices: result.invoices.map((invoice: Invoice) => this.transformInvoiceToSummary(invoice))
     };
     
     if (result.nextCursor) {

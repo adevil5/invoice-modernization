@@ -1,3 +1,4 @@
+import 'aws-sdk-client-mock-jest';
 import { Invoice } from '../../../src/domain/entities/invoice.js';
 import { Customer } from '../../../src/domain/value-objects/customer.js';
 import { Address } from '../../../src/domain/value-objects/address.js';
@@ -114,8 +115,8 @@ describe('DynamoDBInvoiceRepository with mocked AWS SDK', () => {
 
   describe('error handling', () => {
     it('should map DynamoDB errors correctly', async () => {
-      const error = new Error('Table not found');
-      (error as any).name = 'ResourceNotFoundException';
+      const error = new Error('Table not found') as Error & { name: string };
+      error.name = 'ResourceNotFoundException';
       ddbMock.on(PutCommand).rejects(error);
 
       await expect(repository.save(createTestInvoice())).rejects.toThrow(

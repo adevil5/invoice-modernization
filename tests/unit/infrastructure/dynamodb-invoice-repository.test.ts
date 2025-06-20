@@ -1,3 +1,4 @@
+import 'aws-sdk-client-mock-jest';
 import { mockClient } from 'aws-sdk-client-mock';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand, GetCommand, QueryCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
@@ -61,24 +62,22 @@ describe('DynamoDBInvoiceRepository Unit Tests', () => {
       await repository.save(invoice);
 
       // Verify the command was called with correct parameters
-      expect(ddbMock.commandCalls(PutCommand)).toHaveLength(1);
-      expect(ddbMock.commandCalls(PutCommand)[0].args[0].input).toEqual(
-        expect.objectContaining({
-          TableName: tableName,
-          Item: expect.objectContaining({
-            invoiceId: 'INV-123',
-            customerId: 'CUST123'
-          })
+      expect(ddbMock).toHaveReceivedCommandTimes(PutCommand, 1);
+      expect(ddbMock).toHaveReceivedCommandWith(PutCommand, {
+        TableName: tableName,
+        Item: expect.objectContaining({
+          invoiceId: 'INV-123',
+          customerId: 'CUST123'
         })
-      );
+      });
     });
 
     it('should handle DynamoDB errors', async () => {
       const invoice = createTestInvoice();
       
       // Mock a ResourceNotFoundException
-      const error = new Error('Requested resource not found');
-      (error as any).name = 'ResourceNotFoundException';
+      const error = new Error('Requested resource not found') as Error & { name: string };
+      error.name = 'ResourceNotFoundException';
       ddbMock.on(PutCommand).rejects(error);
 
       await expect(repository.save(invoice)).rejects.toThrow(
@@ -263,8 +262,8 @@ describe('DynamoDBInvoiceRepository Unit Tests', () => {
 
   describe('error handling', () => {
     it('should map validation exceptions', async () => {
-      const error = new Error('One or more parameter values were invalid');
-      (error as any).name = 'ValidationException';
+      const error = new Error('One or more parameter values were invalid') as Error & { name: string };
+      error.name = 'ValidationException';
       
       ddbMock.on(GetCommand).rejects(error);
 
@@ -274,8 +273,8 @@ describe('DynamoDBInvoiceRepository Unit Tests', () => {
     });
 
     it('should map rate limit exceptions', async () => {
-      const error = new Error('Throughput exceeds the current throughput limit');
-      (error as any).name = 'ProvisionedThroughputExceededException';
+      const error = new Error('Throughput exceeds the current throughput limit') as Error & { name: string };
+      error.name = 'ProvisionedThroughputExceededException';
       
       ddbMock.on(GetCommand).rejects(error);
 
