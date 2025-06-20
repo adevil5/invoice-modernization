@@ -6,24 +6,25 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "jest",
-    "test:coverage": "jest --coverage",
+    "clean": "node esbuild.config.mjs clean",
+    "dev": "node esbuild.config.mjs watch",
+    "build": "node esbuild.config.mjs build",
+    "build:dev": "node esbuild.config.mjs dev",
+    "build:analyze": "npm run build && echo 'View bundle analysis at: https://esbuild.github.io/analyze/'",
+    "test": "jest --testPathIgnorePatterns='/tests/integration/'",
+    "test:watch": "jest --watch --testPathIgnorePatterns='/tests/integration/'",
+    "test:coverage": "jest --coverage --testPathIgnorePatterns='/tests/integration/'",
     "test:integration": "jest --testMatch='**/tests/integration/**/*.test.ts'",
     "test:e2e": "jest --testMatch='**/tests/e2e/**/*.test.ts'",
-    "prepare": "husky install",
-    "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
-    "bundle": "node esbuild.config.mjs",
-    "bundle:dev": "NODE_ENV=development node esbuild.config.mjs",
-    "bundle:prod": "NODE_ENV=production node esbuild.config.mjs",
-    "bundle:watch": "node esbuild.config.mjs --watch",
-    "bundle:advanced": "node esbuild.config.advanced.mjs build",
-    "bundle:serve": "node esbuild.config.advanced.mjs serve",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write 'src/**/*.ts' 'tests/**/*.ts'",
     "format:check": "prettier --check 'src/**/*.ts' 'tests/**/*.ts'",
-    "semantic-release": "semantic-release"
+    "prepare": "husky install",
+    "semantic-release": "semantic-release",
+    "local:api": "sam local start-api --build-dir dist",
+    "local:invoke": "sam local invoke --build-dir dist"
   },
   "keywords": [
     "invoice",
@@ -37,8 +38,6 @@
   "type": "module",
   "devDependencies": {
     "@eslint/js": "^9.29.0",
-    "esbuild": "^0.24.2",
-    "glob": "^11.0.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/git": "^10.0.1",
@@ -50,20 +49,24 @@
     "@typescript-eslint/parser": "^8.34.1",
     "aws-sdk-client-mock": "^4.1.0",
     "aws-sdk-client-mock-jest": "^4.1.0",
+    "esbuild": "^0.24.2",
+    "esbuild-visualizer": "^0.7.0",
     "eslint": "^9.29.0",
     "eslint-config-prettier": "^10.1.5",
+    "fast-glob": "^3.3.3",
+    "glob": "^11.0.0",
     "husky": "^8.0.0",
     "jest": "^30.0.1",
     "prettier": "^3.5.3",
     "semantic-release": "^24.2.5",
     "ts-jest": "^29.4.0",
+    "tslib": "^2.8.1",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.34.1"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.830.0",
     "@aws-sdk/lib-dynamodb": "^3.830.0",
-    "tslib": "^2.8.1",
     "uuid": "^11.1.0"
   }
 }

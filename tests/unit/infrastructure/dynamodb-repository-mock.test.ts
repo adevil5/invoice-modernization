@@ -5,6 +5,7 @@ import { InvoiceItem } from '../../../src/domain/value-objects/invoice-item.js';
 import { Money } from '../../../src/domain/value-objects/money.js';
 
 import { mockClient } from 'aws-sdk-client-mock';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand, GetCommand } from '@aws-sdk/lib-dynamodb';
 
 // Import after imports
@@ -23,7 +24,8 @@ describe('DynamoDBInvoiceRepository with mocked AWS SDK', () => {
     
     // Create a real DynamoDBDocumentClient instance
     // The mock will intercept all calls to it
-    const docClient = {} as DynamoDBDocumentClient;
+    const client = new DynamoDBClient({});
+    const docClient = DynamoDBDocumentClient.from(client);
     repository = new DynamoDBInvoiceRepository(docClient, tableName);
   });
 

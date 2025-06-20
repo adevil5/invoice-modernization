@@ -41,7 +41,7 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
   mkdir invoice-modernization && cd invoice-modernization
   npm init -y
   npm install -D typescript
-  npx tsc --init --target es2022 --module es2022 --moduleResolution bundler --strict
+  npx tsc --init --target es2022 --module es2022 --moduleResolution node --strict
   ```
 
   - [x] Configure `tsconfig.json` with paths, strict mode, and ES2022 features
@@ -59,7 +59,7 @@ Modernizing a legacy Python 2.7 invoice processing script into a cloud-native, e
 
 - [x] **0.2.3** Initialize testing framework
   - [x] Install Jest with TypeScript: `npm i -D jest @types/jest ts-jest`
-  - [x] Run `npx ts-jest config:init` to generate jest.config.js
+  - [x] Configure Jest with ts-jest preset for ESM compatibility
   - [x] Configure coverage thresholds: 80% minimum
   - [x] Create test helpers and fixtures directories
 

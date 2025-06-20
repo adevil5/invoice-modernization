@@ -1,127 +1,150 @@
-import esbuild from 'esbuild';
-import { glob } from 'glob';
+import * as esbuild from 'esbuild';
+import fastGlob from 'fast-glob';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Common build options
-const commonOptions = {
+// Find all Lambda handler entry points
+const entryPoints = await fastGlob('src/interfaces/**/*-handler.ts');
+
+// Plugin to handle .js extensions in imports
+const removeJsExtensionPlugin = {
+  name: 'remove-js-extension',
+  setup(build) {
+    // Handle relative imports with .js
+    build.onResolve({ filter: /^\\..*\\.js$/ }, args => {
+      return {
+        path: path.join(args.resolveDir, args.path.slice(0, -3)),
+        external: false
+      };
+    });
+    
+    // Handle path alias imports with .js
+    build.onResolve({ filter: /^@(domain|application|infrastructure|interfaces).*\\.js$/ }, args => {
+      const pathAlias = args.path.slice(0, -3);
+      const [, module, ...rest] = pathAlias.split('/');
+      return {
+        path: path.join(__dirname, 'src', module, ...rest),
+        external: false
+      };
+    });
+  }
+};
+
+const baseConfig = {
+  entryPoints,
   bundle: true,
   platform: 'node',
   target: 'node22',
   format: 'esm',
-  sourcemap: true,
-  treeShaking: true,
-  // Use packages: 'external' to exclude all dependencies
-  packages: 'external',
-  // Preserve original file structure
-  outbase: 'src',
   outdir: 'dist',
-  // Enable metafile for bundle analysis
-  metafile: true,
-  // Define Node.js globals
-  define: {
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production')
+  sourcemap: true,
+  plugins: [removeJsExtensionPlugin],
+  // Define path aliases
+  alias: {
+    '@domain': path.resolve(__dirname, 'src/domain'),
+    '@application': path.resolve(__dirname, 'src/application'),
+    '@infrastructure': path.resolve(__dirname, 'src/infrastructure'),
+    '@interfaces': path.resolve(__dirname, 'src/interfaces'),
   },
-  // Banner for ESM compatibility if needed
-  banner: {
-    js: `
-import { createRequire } from 'module';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-const require = createRequire(import.meta.url);
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-`.trim()
-  }
+  // Preserve file structure
+  outbase: 'src/interfaces',
+  // External packages to reduce bundle size (Lambda provides AWS SDK)
+  external: ['@aws-sdk/*'],
+  // Enable tree shaking
+  treeShaking: true,
+  // Keep function names for stack traces
+  keepNames: true,
 };
 
-// Get all entry points
-async function getEntryPoints() {
-  const httpHandlers = await glob('src/interfaces/http/*.ts');
-  const eventHandlers = await glob('src/interfaces/events/*.ts');
-  return [...httpHandlers, ...eventHandlers];
-}
+// Development configuration
+export const devConfig = {
+  ...baseConfig,
+  sourcemap: 'inline',
+  minify: false,
+  // Log build information
+  logLevel: 'info',
+};
 
-// Build function
-async function build() {
-  const entryPoints = await getEntryPoints();
-  
-  console.log('Building with esbuild...');
-  console.log('Entry points:', entryPoints);
-  
-  if (entryPoints.length === 0) {
-    console.log('\n⚠️  No entry points found!');
-    console.log('Looking for TypeScript files in:');
-    console.log('  - src/interfaces/http/*.ts');
-    console.log('  - src/interfaces/events/*.ts');
-    console.log('\nPlease create Lambda handler files in these directories.');
-    return;
-  }
-  
-  try {
-    const result = await esbuild.build({
-      ...commonOptions,
-      entryPoints,
-      minify: process.env.NODE_ENV === 'production',
-      // Keep function names for better stack traces in Lambda
-      keepNames: true,
-      // Output individual files for each Lambda function
-      splitting: false,
-      // Add loader for JSON files
-      loader: {
-        '.json': 'json'
-      }
-    });
-    
-    // Output build metadata
-    if (result.metafile) {
-      console.log('\nBuild complete! Bundle analysis:');
-      const outputs = Object.keys(result.metafile.outputs);
-      for (const output of outputs) {
-        const info = result.metafile.outputs[output];
-        const size = (info.bytes / 1024).toFixed(2);
-        console.log(`  ${output}: ${size} KB`);
-      }
-    }
-    
-    console.log('\nBuild successful!');
-  } catch (error) {
-    console.error('Build failed:', error);
-    process.exit(1);
-  }
-}
+// Production configuration
+export const prodConfig = {
+  ...baseConfig,
+  minify: true,
+  treeShaking: true,
+  // Keep function names for stack traces
+  keepNames: true,
+  // Generate metafile for bundle analysis
+  metafile: true,
+  // Log only warnings and errors
+  logLevel: 'warning',
+};
 
 // Watch mode for development
-async function watch() {
-  const entryPoints = await getEntryPoints();
-  
-  if (entryPoints.length === 0) {
-    console.log('\n⚠️  No entry points found!');
-    console.log('Looking for TypeScript files in:');
-    console.log('  - src/interfaces/http/*.ts');
-    console.log('  - src/interfaces/events/*.ts');
-    console.log('\nPlease create Lambda handler files in these directories.');
-    return;
-  }
-  
-  console.log('Starting watch mode...');
-  
-  const context = await esbuild.context({
-    ...commonOptions,
-    entryPoints,
-    minify: false,
-    logLevel: 'info'
+export async function watch() {
+  const ctx = await esbuild.context({
+    ...devConfig,
+    banner: {
+      js: '// Development build - ' + new Date().toISOString(),
+    },
   });
   
-  await context.watch();
-  console.log('Watching for changes...');
+  await ctx.watch();
+  console.log('⚡ Watching for changes...');
+  
+  // Initial build
+  await ctx.rebuild();
+  console.log('✅ Initial build complete');
 }
 
-// Run build or watch based on arguments
-if (process.argv.includes('--watch')) {
-  watch();
-} else {
-  build();
+// Production build
+export async function build() {
+  const result = await esbuild.build(prodConfig);
+  
+  if (result.metafile) {
+    // Save metafile for analysis
+    const fs = await import('fs/promises');
+    await fs.writeFile('dist/metafile.json', JSON.stringify(result.metafile));
+    console.log('📊 Bundle analysis saved to dist/metafile.json');
+    console.log('   View at: https://esbuild.github.io/analyze/');
+  }
+  
+  console.log('✅ Production build complete');
+  return result;
+}
+
+// Development build
+export async function buildDev() {
+  await esbuild.build(devConfig);
+  console.log('✅ Development build complete');
+}
+
+// Clean build directory
+export async function clean() {
+  const fs = await import('fs/promises');
+  await fs.rm('dist', { recursive: true, force: true });
+  console.log('🧹 Cleaned dist directory');
+}
+
+// CLI handling
+if (process.argv[2]) {
+  const command = process.argv[2];
+  switch (command) {
+    case 'build':
+      await build();
+      break;
+    case 'dev':
+      await buildDev();
+      break;
+    case 'watch':
+      await watch();
+      break;
+    case 'clean':
+      await clean();
+      break;
+    default:
+      console.error(`Unknown command: ${command}`);
+      console.log('Available commands: build, dev, watch, clean');
+      process.exit(1);
+  }
 }

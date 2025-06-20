@@ -3,6 +3,11 @@ import typescript from 'typescript-eslint';
 import prettierConfig from 'eslint-config-prettier';
 
 export default [
+  // Ignore files
+  {
+    ignores: ['node_modules/**', 'dist/**', 'coverage/**', '**/*.mjs', '**/*.js', '!jest.config.js'],
+  },
+  
   // Base JavaScript configuration
   js.configs.recommended,
   

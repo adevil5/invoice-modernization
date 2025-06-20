@@ -1,4 +1,5 @@
 import { mockClient } from 'aws-sdk-client-mock';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand, GetCommand, QueryCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 import { DynamoDBInvoiceRepository } from '../../../src/infrastructure/repositories/dynamodb-invoice-repository.js';
 import { Invoice } from '../../../src/domain/entities/invoice.js';
@@ -20,7 +21,8 @@ describe('DynamoDBInvoiceRepository Unit Tests', () => {
     
     // Create a real DynamoDBDocumentClient instance
     // The mock will intercept all calls to it
-    const docClient = {} as DynamoDBDocumentClient;
+    const client = new DynamoDBClient({});
+    const docClient = DynamoDBDocumentClient.from(client);
     repository = new DynamoDBInvoiceRepository(docClient, tableName);
   });
 

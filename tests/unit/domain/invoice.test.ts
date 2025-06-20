@@ -1,9 +1,9 @@
-import { Invoice } from '@domain/entities/invoice.js';
-import { Address } from '@domain/value-objects/address.js';
-import { Customer } from '@domain/value-objects/customer.js';
-import { InvoiceItem } from '@domain/value-objects/invoice-item.js';
-import { Money } from '@domain/value-objects/money.js';
-import { InvoiceValidationError } from '@domain/exceptions/invoice-validation-error.js';
+import { Invoice } from '@domain/entities/invoice';
+import { Address } from '@domain/value-objects/address';
+import { Customer } from '@domain/value-objects/customer';
+import { InvoiceItem } from '@domain/value-objects/invoice-item';
+import { Money } from '@domain/value-objects/money';
+import { InvoiceValidationError } from '@domain/exceptions/invoice-validation-error';
 
 describe('Invoice Entity', () => {
   const validCustomer = new Customer(

@@ -7,7 +7,7 @@
     /* Modules */
     "module": "es2022",
     "rootDir": "./src",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "moduleDetection": "force",
     "baseUrl": "./",
     "paths": {

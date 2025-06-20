@@ -1,3 +1,5 @@
+import { jest } from '@jest/globals';
+
 process.env.NODE_ENV = 'test';
 process.env.AWS_REGION = 'us-east-1';
 process.env.DYNAMODB_TABLE_NAME = 'test-invoices';
