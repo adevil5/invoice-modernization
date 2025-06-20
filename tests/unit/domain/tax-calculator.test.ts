@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
-import { TaxCalculator } from '../../../src/domain/services/tax-calculator.js';
-import { TaxRule } from '../../../src/domain/value-objects/tax-rule.js';
-import { Money } from '../../../src/domain/value-objects/money.js';
+import { TaxCalculator } from '../../../src/domain/services/tax-calculator';
+import { TaxRule } from '../../../src/domain/value-objects/tax-rule';
+import { Money } from '../../../src/domain/value-objects/money';
 
 describe('TaxCalculator', () => {
   describe('Basic Tax Calculation', () => {

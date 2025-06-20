@@ -2,24 +2,10 @@
 export default {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  globals: {
-    'ts-jest': {
-      tsconfig: {
-        esModuleInterop: true,
-        allowSyntheticDefaultImports: true
-      }
-    }
-  },
   testMatch: ['<rootDir>/tests/**/*.test.ts'],
   setupFilesAfterEnv: ['<rootDir>/tests/helpers/setup.ts'],
   moduleNameMapper: {
-    // Handle .js imports by stripping the extension
-    '^(\\.{1,2}/.*)\\.js$': '$1',
     // Handle path aliases
-    '^@domain/(.*)\\.js$': '<rootDir>/src/domain/$1',
-    '^@application/(.*)\\.js$': '<rootDir>/src/application/$1',
-    '^@infrastructure/(.*)\\.js$': '<rootDir>/src/infrastructure/$1',
-    '^@interfaces/(.*)\\.js$': '<rootDir>/src/interfaces/$1',
     '^@domain/(.*)$': '<rootDir>/src/domain/$1',
     '^@application/(.*)$': '<rootDir>/src/application/$1',
     '^@infrastructure/(.*)$': '<rootDir>/src/infrastructure/$1',

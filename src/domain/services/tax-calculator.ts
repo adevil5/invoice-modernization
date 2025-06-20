@@ -1,5 +1,5 @@
-import type { Money } from '../value-objects/money.js';
-import { TaxRule } from '../value-objects/tax-rule.js';
+import type { Money } from '../value-objects/money';
+import { TaxRule } from '../value-objects/tax-rule';
 
 export class TaxCalculator {
   private readonly stateTaxRates: Map<string, number> = new Map([

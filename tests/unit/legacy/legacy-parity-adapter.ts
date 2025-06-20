@@ -1,8 +1,8 @@
-import { CreateInvoiceUseCase } from '../../../src/application/use-cases/create-invoice.js';
-import type { InvoiceRepository } from '../../../src/application/ports/invoice-repository.js';
-import type { EventPublisher } from '../../../src/application/ports/event-publisher.js';
-import type { CreateInvoiceDto } from '../../../src/application/dto/create-invoice-dto.js';
-import type { Invoice } from '../../../src/domain/entities/invoice.js';
+import { CreateInvoiceUseCase } from '../../../src/application/use-cases/create-invoice';
+import type { InvoiceRepository } from '../../../src/application/ports/invoice-repository';
+import type { EventPublisher } from '../../../src/application/ports/event-publisher';
+import type { CreateInvoiceDto } from '../../../src/application/dto/create-invoice-dto';
+import type { Invoice } from '../../../src/domain/entities/invoice';
 
 interface LegacyInvoiceInput {
   customer_id: string;

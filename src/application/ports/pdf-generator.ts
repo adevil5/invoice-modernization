@@ -1,4 +1,4 @@
-import type { Invoice } from '../../domain/entities/invoice.js';
+import type { Invoice } from '../../domain/entities/invoice';
 
 /**
  * Port interface for PDF generation.

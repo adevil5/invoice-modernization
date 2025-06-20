@@ -1,4 +1,4 @@
-import { createMockInvoice } from '../helpers/test-utils.js';
+import { createMockInvoice } from '../helpers/test-utils';
 
 describe('Jest Setup Verification', () => {
   it('should run a simple test', () => {

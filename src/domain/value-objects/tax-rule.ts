@@ -1,4 +1,4 @@
-import { Money } from './money.js';
+import { Money } from './money';
 
 export class TaxRule {
   constructor(

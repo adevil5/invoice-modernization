@@ -1,12 +1,12 @@
-import type { Invoice } from '../../domain/entities/invoice.js';
-import { InvoiceNotFoundError } from '../../domain/exceptions/invoice-not-found-error.js';
-import { InvoiceValidationError } from '../../domain/exceptions/invoice-validation-error.js';
-import type { InvoiceRepository, FindResult } from '../ports/invoice-repository.js';
+import type { Invoice } from '../../domain/entities/invoice';
+import { InvoiceNotFoundError } from '../../domain/exceptions/invoice-not-found-error';
+import { InvoiceValidationError } from '../../domain/exceptions/invoice-validation-error';
+import type { InvoiceRepository, FindResult } from '../ports/invoice-repository';
 import type {
   QueryInvoiceDto,
   QueryInvoiceByIdDto,
   QueryInvoiceResponse
-} from '../dto/query-invoice-dto.js';
+} from '../dto/query-invoice-dto';
 
 /**
  * Use case for querying invoices.

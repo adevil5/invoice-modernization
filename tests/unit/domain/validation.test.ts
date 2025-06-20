@@ -1,10 +1,10 @@
 import { describe, it, expect } from '@jest/globals';
-import { ValidationService } from '../../../src/domain/services/validation-service.js';
-import { FieldValidationError, BusinessRuleViolationError } from '../../../src/domain/exceptions/validation-errors.js';
-import { Customer } from '../../../src/domain/value-objects/customer.js';
-import { Address } from '../../../src/domain/value-objects/address.js';
-import { InvoiceItem } from '../../../src/domain/value-objects/invoice-item.js';
-import { Money } from '../../../src/domain/value-objects/money.js';
+import { ValidationService } from '../../../src/domain/services/validation-service';
+import { FieldValidationError, BusinessRuleViolationError } from '../../../src/domain/exceptions/validation-errors';
+import { Customer } from '../../../src/domain/value-objects/customer';
+import { Address } from '../../../src/domain/value-objects/address';
+import { InvoiceItem } from '../../../src/domain/value-objects/invoice-item';
+import { Money } from '../../../src/domain/value-objects/money';
 
 describe('ValidationService', () => {
   describe('validateInvoiceData', () => {

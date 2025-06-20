@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import { CreateInvoiceUseCase } from '../../../src/application/use-cases/create-invoice.js';
-import type { InvoiceRepository } from '../../../src/application/ports/invoice-repository.js';
-import type { EventPublisher } from '../../../src/application/ports/event-publisher.js';
-import type { CreateInvoiceDto } from '../../../src/application/dto/create-invoice-dto.js';
-import { Invoice } from '../../../src/domain/entities/invoice.js';
-import { InvoiceValidationError } from '../../../src/domain/exceptions/invoice-validation-error.js';
-import { CompositeValidationError } from '../../../src/domain/exceptions/validation-errors.js';
+import { CreateInvoiceUseCase } from '../../../src/application/use-cases/create-invoice';
+import type { InvoiceRepository } from '../../../src/application/ports/invoice-repository';
+import type { EventPublisher } from '../../../src/application/ports/event-publisher';
+import type { CreateInvoiceDto } from '../../../src/application/dto/create-invoice-dto';
+import { Invoice } from '../../../src/domain/entities/invoice';
+import { InvoiceValidationError } from '../../../src/domain/exceptions/invoice-validation-error';
+import { CompositeValidationError } from '../../../src/domain/exceptions/validation-errors';
 
 describe('CreateInvoiceUseCase', () => {
   let mockInvoiceRepository: jest.Mocked<InvoiceRepository>;
