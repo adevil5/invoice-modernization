@@ -1,6 +1,6 @@
-import type { Invoice } from '../../domain/entities/invoice';
-import { InvoiceNotFoundError } from '../../domain/exceptions/invoice-not-found-error';
-import { InvoiceValidationError } from '../../domain/exceptions/invoice-validation-error';
+import type { Invoice } from '@domain/entities/invoice';
+import { InvoiceNotFoundError } from '@domain/exceptions/invoice-not-found-error';
+import { InvoiceValidationError } from '@domain/exceptions/invoice-validation-error';
 import type { InvoiceRepository, FindResult } from '../ports/invoice-repository';
 import type {
   QueryInvoiceDto,

@@ -1,4 +1,4 @@
-import type { Invoice } from '../../domain/entities/invoice';
+import type { Invoice } from '@domain/entities/invoice';
 
 /**
  * Options for find operations with pagination and sorting.

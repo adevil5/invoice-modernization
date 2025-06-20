@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 
-import { ProcessInvoiceUseCase } from '../../../src/application/use-cases/process-invoice';
-import type { InvoiceRepository } from '../../../src/application/ports/invoice-repository';
-import type { EventPublisher } from '../../../src/application/ports/event-publisher';
-import type { PdfGenerator } from '../../../src/application/ports/pdf-generator';
-import type { DocumentRepository } from '../../../src/application/ports/document-repository';
-import { Invoice } from '../../../src/domain/entities/invoice';
-import { Address } from '../../../src/domain/value-objects/address';
-import { Customer } from '../../../src/domain/value-objects/customer';
-import { InvoiceItem } from '../../../src/domain/value-objects/invoice-item';
-import { Money } from '../../../src/domain/value-objects/money';
-import { InvoiceNotFoundError } from '../../../src/domain/exceptions/invoice-not-found-error';
+import { ProcessInvoiceUseCase } from '@application/use-cases/process-invoice';
+import type { InvoiceRepository } from '@application/ports/invoice-repository';
+import type { EventPublisher } from '@application/ports/event-publisher';
+import type { PdfGenerator } from '@application/ports/pdf-generator';
+import type { DocumentRepository } from '@application/ports/document-repository';
+import { Invoice } from '@domain/entities/invoice';
+import { Address } from '@domain/value-objects/address';
+import { Customer } from '@domain/value-objects/customer';
+import { InvoiceItem } from '@domain/value-objects/invoice-item';
+import { Money } from '@domain/value-objects/money';
+import { InvoiceNotFoundError } from '@domain/exceptions/invoice-not-found-error';
 
 describe('ProcessInvoiceUseCase', () => {
   let mockInvoiceRepository: jest.Mocked<InvoiceRepository>;

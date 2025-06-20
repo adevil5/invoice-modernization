@@ -1,4 +1,4 @@
-import { InvoiceNotFoundError } from '../../domain/exceptions/invoice-not-found-error';
+import { InvoiceNotFoundError } from '@domain/exceptions/invoice-not-found-error';
 import type { InvoiceRepository } from '../ports/invoice-repository';
 import type { PdfGenerator } from '../ports/pdf-generator';
 import type { DocumentRepository } from '../ports/document-repository';

@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/unbound-method */
  
 
-import { QueryInvoiceUseCase } from '../../../src/application/use-cases/query-invoice';
-import type { InvoiceRepository } from '../../../src/application/ports/invoice-repository';
-import type { QueryInvoiceDto, QueryInvoiceByIdDto } from '../../../src/application/dto/query-invoice-dto';
-import { Invoice } from '../../../src/domain/entities/invoice';
-import { Customer } from '../../../src/domain/value-objects/customer';
-import { Address } from '../../../src/domain/value-objects/address';
-import { InvoiceItem } from '../../../src/domain/value-objects/invoice-item';
-import { Money } from '../../../src/domain/value-objects/money';
-import { InvoiceNotFoundError } from '../../../src/domain/exceptions/invoice-not-found-error';
-import { InvoiceValidationError } from '../../../src/domain/exceptions/invoice-validation-error';
+import { QueryInvoiceUseCase } from '@application/use-cases/query-invoice';
+import type { InvoiceRepository } from '@application/ports/invoice-repository';
+import type { QueryInvoiceDto, QueryInvoiceByIdDto } from '@application/dto/query-invoice-dto';
+import { Invoice } from '@domain/entities/invoice';
+import { Customer } from '@domain/value-objects/customer';
+import { Address } from '@domain/value-objects/address';
+import { InvoiceItem } from '@domain/value-objects/invoice-item';
+import { Money } from '@domain/value-objects/money';
+import { InvoiceNotFoundError } from '@domain/exceptions/invoice-not-found-error';
+import { InvoiceValidationError } from '@domain/exceptions/invoice-validation-error';
 
 describe('QueryInvoiceUseCase', () => {
   let mockInvoiceRepository: jest.Mocked<InvoiceRepository>;

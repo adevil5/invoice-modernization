@@ -1,16 +1,16 @@
 import 'aws-sdk-client-mock-jest';
-import { Invoice } from '../../../src/domain/entities/invoice';
-import { Customer } from '../../../src/domain/value-objects/customer';
-import { Address } from '../../../src/domain/value-objects/address';
-import { InvoiceItem } from '../../../src/domain/value-objects/invoice-item';
-import { Money } from '../../../src/domain/value-objects/money';
+import { Invoice } from '@domain/entities/invoice';
+import { Customer } from '@domain/value-objects/customer';
+import { Address } from '@domain/value-objects/address';
+import { InvoiceItem } from '@domain/value-objects/invoice-item';
+import { Money } from '@domain/value-objects/money';
 
 import { mockClient } from 'aws-sdk-client-mock';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand, GetCommand } from '@aws-sdk/lib-dynamodb';
 
 // Import after imports
-import { DynamoDBInvoiceRepository } from '../../../src/infrastructure/repositories/dynamodb-invoice-repository';
+import { DynamoDBInvoiceRepository } from '@infrastructure/repositories/dynamodb-invoice-repository';
 
 // Create the mock
 const ddbMock = mockClient(DynamoDBDocumentClient);

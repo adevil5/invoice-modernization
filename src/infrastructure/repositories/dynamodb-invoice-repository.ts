@@ -14,12 +14,12 @@ import type {
   FindOptions,
   FindResult,
   DateRangeOptions 
-} from '../../application/ports/invoice-repository';
-import { Invoice } from '../../domain/entities/invoice';
-import { Customer } from '../../domain/value-objects/customer';
-import { Address } from '../../domain/value-objects/address';
-import { InvoiceItem } from '../../domain/value-objects/invoice-item';
-import { Money } from '../../domain/value-objects/money';
+} from '@application/ports/invoice-repository';
+import { Invoice } from '@domain/entities/invoice';
+import { Customer } from '@domain/value-objects/customer';
+import { Address } from '@domain/value-objects/address';
+import { InvoiceItem } from '@domain/value-objects/invoice-item';
+import { Money } from '@domain/value-objects/money';
 
 interface DynamoDBInvoiceItem {
   invoiceId: string;

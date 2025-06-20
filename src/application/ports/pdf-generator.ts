@@ -1,4 +1,4 @@
-import type { Invoice } from '../../domain/entities/invoice';
+import type { Invoice } from '@domain/entities/invoice';
 
 /**
  * Port interface for PDF generation.
